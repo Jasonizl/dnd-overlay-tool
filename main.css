@@ -1,46 +1,47 @@
 html {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    min-height: 100%;
-    border: 1px solid black;
-    box-sizing: border-box;
+  min-height: 100%;
+  border: 1px solid black;
+  box-sizing: border-box;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
 
 #Header {
-    width: 100%;
-    height: 24px;
-    background: grey;
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
+  width: 100%;
+  height: 24px;
+  background: grey;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 #DraggableHeaderElement {
-    -webkit-app-region: drag;
-    flex-grow: 1;
-    height: 100%;
+  -webkit-app-region: drag;
+  flex-grow: 1;
+  height: 100%;
 }
 
 .HeaderElement {
-    width: 20px;
-    height: 100%;
-    display: flex;
-    background: red;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
+  width: 20px;
+  height: 100%;
+  display: flex;
+  background: red;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
 }
 
 .HeaderElement:hover {
-    background: yellow;
+  background: yellow;
 }

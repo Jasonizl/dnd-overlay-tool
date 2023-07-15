@@ -1,16 +1,16 @@
-import { app, BrowserWindow, ipcMain, screen } from "electron";
-import * as path from "path";
-import {mainWindowSize, optionsWindowSize} from './constants/window';
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import * as path from 'path';
+import { mainWindowSize, optionsWindowSize } from './constants/window';
 
 let mainWindowId = -1;
 
 function createOptionsWindow() {
   const optionsWindow = new BrowserWindow({
-    ...optionsWindowSize
-  })
+    ...optionsWindowSize,
+  });
 
   // and load the options.html of the app.
-  optionsWindow.loadFile(path.join(__dirname, "../options.html"));
+  optionsWindow.loadFile(path.join(__dirname, '../options.html'));
 }
 
 function createWindow() {
@@ -18,7 +18,7 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     ...mainWindowSize,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js")
+      preload: path.join(__dirname, 'preload.js'),
     },
     transparent: true,
     frame: false,
@@ -26,7 +26,7 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, "../index.html"));
+  mainWindow.loadFile(path.join(__dirname, '../index.html'));
   mainWindowId = mainWindow.id;
 
   mainWindow.webContents.openDevTools();
@@ -44,7 +44,10 @@ app.whenReady().then(() => {
    */
   ipcMain.on('maximizeWindow', () => {
     const mainWindow = BrowserWindow.getAllWindows().find((window) => window.id === mainWindowId);
-    const currentDisplay = screen.getDisplayNearestPoint({x: mainWindow.getPosition()[0], y: mainWindow.getPosition()[1]});
+    const currentDisplay = screen.getDisplayNearestPoint({
+      x: mainWindow.getPosition()[0],
+      y: mainWindow.getPosition()[1],
+    });
 
     if (currentDisplay.workArea.width === mainWindow.getSize()[0] && currentDisplay.workArea.height === mainWindow.getSize()[1]) {
       mainWindow.setSize(mainWindowSize.width, mainWindowSize.height);
@@ -58,7 +61,7 @@ app.whenReady().then(() => {
 
   // for executing rotation program https://ourcodeworld.com/articles/read/154/how-to-execute-an-exe-file-system-application-using-electron-framework
 
-  app.on("activate", function () {
+  app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -71,8 +74,8 @@ app.whenReady().then(() => {
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });

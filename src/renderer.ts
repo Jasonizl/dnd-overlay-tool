@@ -5,9 +5,9 @@
 // Use preload.js to selectively enable features
 // needed in the renderer process.
 
-const maximizeButton = document.getElementById('buttonMaximize')
+const maximizeButton = document.getElementById('buttonMaximize');
 maximizeButton.addEventListener('click', () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    window.electron.maximizeWindow();
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  window.electron.maximizeWindow();
 });
