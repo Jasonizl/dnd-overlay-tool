@@ -18,7 +18,7 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
-    width: 801,
+    width: 800,
     transparent: true,
     frame: false,
     resizable: true,
