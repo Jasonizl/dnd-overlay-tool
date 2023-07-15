@@ -18,4 +18,6 @@ window.addEventListener('DOMContentLoaded', () => {
 /* Exposed functions to use for the renderer.ts */
 contextBridge.exposeInMainWorld('electron', {
   maximizeWindow: () => ipcRenderer.send('maximizeWindow'),
+  minimizeWindows: () => ipcRenderer.send('minimizeWindows'),
+  closeApp: () => ipcRenderer.send('closeApp'),
 });

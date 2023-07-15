@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 import { mainWindowSize, optionsWindowSize } from './constants/window';
+import { closeApplication } from './helpers/app';
 
 let mainWindowId = -1;
 
@@ -43,7 +44,7 @@ app.whenReady().then(() => {
    * maximize when not maximized - otherwise bring it back to default size
    */
   ipcMain.on('maximizeWindow', () => {
-    const mainWindow = BrowserWindow.getAllWindows().find((window) => window.id === mainWindowId);
+    const mainWindow = BrowserWindow.fromId(mainWindowId);
     const currentDisplay = screen.getDisplayNearestPoint({
       x: mainWindow.getPosition()[0],
       y: mainWindow.getPosition()[1],
@@ -55,9 +56,20 @@ app.whenReady().then(() => {
       mainWindow.setSize(currentDisplay.workArea.width, currentDisplay.workArea.height);
     }
 
-    // set position to the upper left of current display
-    mainWindow.setPosition(currentDisplay.bounds.x, currentDisplay.bounds.y);
+    mainWindow.center();
   });
+
+  /**
+   * minimize all windows, when main window wants to be minimized
+   */
+  ipcMain.on('minimizeWindows', () => {
+    BrowserWindow.getAllWindows().forEach((window) => window.minimize());
+  });
+
+  /**
+   * closes app. Called from X button of main window
+   */
+  ipcMain.on('closeApp', () => closeApplication());
 
   // for executing rotation program https://ourcodeworld.com/articles/read/154/how-to-execute-an-exe-file-system-application-using-electron-framework
 
@@ -71,14 +83,4 @@ app.whenReady().then(() => {
   });
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.
+app.on('window-all-closed', () => closeApplication());
