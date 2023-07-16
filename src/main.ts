@@ -20,6 +20,7 @@ function createWindow() {
     ...mainWindowSize,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
     },
     transparent: true,
     frame: false,
@@ -30,7 +31,8 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
   mainWindowId = mainWindow.id;
 
-  mainWindow.webContents.openDevTools();
+  // TODO to be removed when not needed anymore
+  //mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished

@@ -45,3 +45,11 @@ body {
 .HeaderElement:hover {
   background: yellow;
 }
+
+canvas {
+  position: absolute;
+  top: 25px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
