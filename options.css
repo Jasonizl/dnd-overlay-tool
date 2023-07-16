@@ -1,0 +1,49 @@
+body {
+    font-size: 24px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 16px 0 0;
+}
+
+h5:first-of-type {
+    margin: 0;
+}
+
+hr {
+    width: 100%;
+}
+
+Button {
+    width: -webkit-fill-available;
+}
+
+#menu {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+}
+
+#gridSize {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    gap: 8px;
+    place-content: space-evenly;
+}
+
+#gridSizeInput {
+    width: 64px;
+    font-size: 20px;
+}
+
+#borderColorPicker {
+    width: 100%;
+}
+
+#gridThickness {
+    display: flex;
+    flex-flow: row;
+    gap: 8px;
+    width: 100%;
+}

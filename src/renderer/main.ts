@@ -26,6 +26,8 @@ closeButton.addEventListener('click', () => {
   window.electron.closeApp();
 });
 
+/** Grid main->rerender ipc calls */
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 window.electron.rerenderGrid(() => {
@@ -33,6 +35,27 @@ window.electron.rerenderGrid(() => {
   alert('PLEASE HELP ME');
 
   // TODO rerender here
+});
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.electron.setGridSize((size: number) => {
+  gridSize = size;
+  drawGrid();
+});
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.electron.setGridColor((color: string) => {
+  gridColor = color;
+  drawGrid();
+});
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.electron.setGridThickness((thickness: number) => {
+  gridThickness = thickness;
+  drawGrid();
 });
 
 /** Canvas handling **/
@@ -75,6 +98,9 @@ canvas.addEventListener('mousemove', (e) => {
 });
 
 /* Canvas - LISTENERS END */
+let gridSize = 80;
+let gridColor = 'black';
+let gridThickness = 1;
 
 function drawGrid() {
   canvas.width = window.innerWidth;
@@ -87,7 +113,6 @@ function drawGrid() {
   //grid width and height
   const bw = canvas.width;
   const bh = canvas.height;
-  const gridSize = 80;
 
   for (let x = offsetX; x <= bw; x += gridSize) {
     ctx.moveTo(0.5 + x, 0);
@@ -99,7 +124,8 @@ function drawGrid() {
     ctx.lineTo(bw, 0.5 + y);
   }
 
-  ctx.strokeStyle = 'black';
+  ctx.strokeStyle = gridColor;
+  ctx.lineWidth = gridThickness;
   ctx.stroke();
 }
 

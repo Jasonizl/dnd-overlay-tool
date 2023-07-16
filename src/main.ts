@@ -8,6 +8,9 @@ let mainWindowId = -1;
 function createOptionsWindow() {
   const optionsWindow = new BrowserWindow({
     ...optionsWindowSize,
+    webPreferences: {
+      preload: path.join(__dirname, 'preloader/options.js'),
+    },
   });
 
   // and load the options.html of the app.
@@ -19,8 +22,7 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     ...mainWindowSize,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true,
+      preload: path.join(__dirname, 'preloader/main.js'),
     },
     transparent: true,
     frame: false,
@@ -72,6 +74,21 @@ app.whenReady().then(() => {
    * closes app. Called from X button of main window
    */
   ipcMain.on('closeApp', () => closeApplication());
+
+  ipcMain.on('setGridSize', (event, args) => {
+    const mainWindow = BrowserWindow.fromId(mainWindowId);
+    mainWindow.webContents.send('setGridSize', args);
+  });
+
+  ipcMain.on('setGridColor', (event, args) => {
+    const mainWindow = BrowserWindow.fromId(mainWindowId);
+    mainWindow.webContents.send('setGridColor', args);
+  });
+
+  ipcMain.on('setGridThickness', (event, args) => {
+    const mainWindow = BrowserWindow.fromId(mainWindowId);
+    mainWindow.webContents.send('setGridThickness', args);
+  });
 
   // for executing rotation program https://ourcodeworld.com/articles/read/154/how-to-execute-an-exe-file-system-application-using-electron-framework
 

@@ -5,8 +5,33 @@
     <title>Title</title>
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <link rel="stylesheet" type="text/css" href='options.css'/>
   </head>
   <body>
-    Basic Options window
+  <div id='menu'>
+    <h5>Grid size</h5>
+    <hr />
+    <div id='gridSize'>
+      <button id='gridSizeButtonMinusBig'>--</button>
+      <button id='gridSizeButtonMinus'>-</button>
+      <label>
+        <input type='number' id='gridSizeInput' value='80'/>
+      </label>
+      <button id='gridSizeButtonPlus'>+</button>
+      <button id='gridSizeButtonPlusBig'>++</button>
+    </div>
+    <h5>Grid color</h5>
+    <hr />
+    <label style='width: 100%'>
+      <input type="color" id="borderColorPicker" value="#000000">
+    </label>
+    <h5>Grid Thickness</h5>
+    <hr />
+    <div id='gridThickness'>
+      <button id='gridThicknessButtonMinus'>-</button>
+      <button id='gridThicknessButtonPlus'>+</button>
+    </div>
+  </div>
+  <script src="./dist/renderer/options.js"></script>
   </body>
 </html>
