@@ -1,5 +1,6 @@
 body {
     font-size: 24px;
+    font-family: "Arial", Serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -15,7 +16,12 @@ hr {
 }
 
 Button {
-    width: -webkit-fill-available;
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+Button:disabled {
+    cursor: not-allowed;
 }
 
 #menu {
@@ -46,4 +52,25 @@ Button {
     flex-flow: row;
     gap: 8px;
     width: 100%;
+}
+
+#displays {
+    display: flex;
+    flex-flow: row;
+    gap: 8px;
+    width: 100%;
+}
+
+.displayItem {
+    padding-right: 8px;
+    border-right: 1px solid black;
+    display: flex;
+    flex-flow: column;
+    gap: 8px;
+    flex-grow: 1;
+}
+
+.displayItem:last-of-type {
+    padding-right: 0;
+    border-right: none;
 }

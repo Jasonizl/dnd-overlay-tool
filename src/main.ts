@@ -2,6 +2,8 @@ import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 import { mainWindowSize, optionsWindowSize } from './constants/window';
 import { closeApplication } from './helpers/app';
+import { execFile } from 'child_process';
+import * as fs from 'fs';
 
 let mainWindowId = -1;
 
@@ -13,8 +15,11 @@ function createOptionsWindow() {
     },
   });
 
-  // and load the options.html of the app.
+  const amountOfDisplays = screen.getAllDisplays().length;
+  const doesRotationScriptExist = fs.existsSync('./ScreenOrientationChangeTool.exe');
+
   optionsWindow.loadFile(path.join(__dirname, '../options.html'));
+  optionsWindow.webContents.send('getDisplays', amountOfDisplays, doesRotationScriptExist);
 }
 
 function createWindow() {
@@ -75,22 +80,42 @@ app.whenReady().then(() => {
    */
   ipcMain.on('closeApp', () => closeApplication());
 
+  /**
+   * sets grid size of main window
+   * IPC from options renderer to main renderer
+   */
   ipcMain.on('setGridSize', (event, args) => {
     const mainWindow = BrowserWindow.fromId(mainWindowId);
     mainWindow.webContents.send('setGridSize', args);
   });
 
+  /**
+   * sets grid color of main window
+   * IPC from options renderer to main renderer
+   */
   ipcMain.on('setGridColor', (event, args) => {
     const mainWindow = BrowserWindow.fromId(mainWindowId);
     mainWindow.webContents.send('setGridColor', args);
   });
 
+  /**
+   * sets grid thickness of main window
+   * IPC from options renderer to main renderer
+   */
   ipcMain.on('setGridThickness', (event, args) => {
     const mainWindow = BrowserWindow.fromId(mainWindowId);
     mainWindow.webContents.send('setGridThickness', args);
   });
 
-  // for executing rotation program https://ourcodeworld.com/articles/read/154/how-to-execute-an-exe-file-system-application-using-electron-framework
+  /**
+   * Rotates display with external script.
+   */
+  ipcMain.on('rotateDisplay', (event, displayIndex, rotation) => {
+    execFile('./ScreenOrientationChangeTool.exe', [`${displayIndex}`, `${rotation}`], (err, data) => {
+      console.log({ err });
+      console.log(data.toString());
+    });
+  });
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

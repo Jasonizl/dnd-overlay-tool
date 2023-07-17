@@ -6,6 +6,6 @@ export const mainWindowSize: WindowSize = {
 };
 
 export const optionsWindowSize: WindowSize = {
-  height: 400,
+  height: 600,
   width: 300,
 };
