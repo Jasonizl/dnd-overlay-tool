@@ -74,3 +74,14 @@ Button:disabled {
     padding-right: 0;
     border-right: none;
 }
+
+.headerWithTitleAndElement {
+    width: 100%;
+    display: flex;
+    place-content: space-between;
+    margin-top: 16px
+}
+
+#reloadDisplays {
+    flex-grow: unset;
+}

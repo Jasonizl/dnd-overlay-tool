@@ -6,6 +6,8 @@ import { execFile } from 'child_process';
 import * as fs from 'fs';
 
 let mainWindowId = -1;
+let optionsWindowId = -1;
+let doesRotationScriptExist: boolean;
 
 function createOptionsWindow() {
   const optionsWindow = new BrowserWindow({
@@ -14,9 +16,10 @@ function createOptionsWindow() {
       preload: path.join(__dirname, 'preloader/options.js'),
     },
   });
+  optionsWindowId = optionsWindow.id;
 
   const amountOfDisplays = screen.getAllDisplays().length;
-  const doesRotationScriptExist = fs.existsSync('./ScreenOrientationChangeTool.exe');
+  doesRotationScriptExist = fs.existsSync('./ScreenOrientationChangeTool.exe');
 
   optionsWindow.loadFile(path.join(__dirname, '../options.html'));
   optionsWindow.webContents.send('getDisplays', amountOfDisplays, doesRotationScriptExist);
@@ -28,6 +31,7 @@ function createWindow() {
     ...mainWindowSize,
     webPreferences: {
       preload: path.join(__dirname, 'preloader/main.js'),
+      devTools: false
     },
     transparent: true,
     frame: false,
@@ -37,9 +41,6 @@ function createWindow() {
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
   mainWindowId = mainWindow.id;
-
-  // TODO to be removed when not needed anymore
-  //mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -106,6 +107,16 @@ app.whenReady().then(() => {
     const mainWindow = BrowserWindow.fromId(mainWindowId);
     mainWindow.webContents.send('setGridThickness', args);
   });
+
+  /**
+   * sends the getDisplays IPC again to the options window
+   * Is invoked from options window
+   */
+  ipcMain.on('requestDisplays', () => {
+    const optionsWindow = BrowserWindow.fromId(optionsWindowId);
+    const amountOfDisplays = screen.getAllDisplays().length;
+    optionsWindow.webContents.send('getDisplays', amountOfDisplays, doesRotationScriptExist);
+  })
 
   /**
    * Rotates display with external script.

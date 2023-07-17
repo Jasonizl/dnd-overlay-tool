@@ -86,6 +86,18 @@ function changeGridThickness(thickness: string) {
 /* Rotation stuff */
 const currentDisplayRotation: number[] = [];
 
+// can be used to request the displays again. will remove all current displays
+// Will not load the script new
+const displayRequestButton = document.getElementById('reloadDisplays');
+displayRequestButton.addEventListener('click', () => {
+  const displayDiv = document.getElementById('displays');
+  displayDiv.innerHTML = '';
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  window.electron.requestDisplays();
+});
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 window.electron.getDisplays((displays: number, enabled: boolean) => {
