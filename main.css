@@ -29,6 +29,9 @@ body {
   -webkit-app-region: drag;
   flex-grow: 1;
   height: 100%;
+  align-content: center;
+  display: flex;
+  align-items: center;
 }
 
 .HeaderElement {

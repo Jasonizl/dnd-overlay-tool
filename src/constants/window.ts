@@ -1,11 +1,12 @@
-import { WindowSize } from '../interfaces/window';
+import BrowserWindowConstructorOptions = Electron.BrowserWindowConstructorOptions;
 
-export const mainWindowSize: WindowSize = {
+export const mainWindowOptions: BrowserWindowConstructorOptions = {
   height: 600,
   width: 800,
 };
 
-export const optionsWindowSize: WindowSize = {
+export const optionsWindowOptions: BrowserWindowConstructorOptions = {
+  title: 'DnD Overlay Tool - Options',
   height: 600,
   width: 300,
 };

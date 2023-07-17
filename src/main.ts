@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
-import { mainWindowSize, optionsWindowSize } from './constants/window';
+import { mainWindowOptions, optionsWindowOptions } from './constants/window';
 import { closeApplication } from './helpers/app';
 import { execFile } from 'child_process';
 import * as fs from 'fs';
@@ -11,7 +11,7 @@ let doesRotationScriptExist: boolean;
 
 function createOptionsWindow() {
   const optionsWindow = new BrowserWindow({
-    ...optionsWindowSize,
+    ...optionsWindowOptions,
     webPreferences: {
       preload: path.join(__dirname, 'preloader/options.js'),
     },
@@ -28,10 +28,9 @@ function createOptionsWindow() {
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    ...mainWindowSize,
+    ...mainWindowOptions,
     webPreferences: {
       preload: path.join(__dirname, 'preloader/main.js'),
-      devTools: false
     },
     transparent: true,
     frame: false,
@@ -41,6 +40,8 @@ function createWindow() {
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
   mainWindowId = mainWindow.id;
+
+  mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -61,7 +62,7 @@ app.whenReady().then(() => {
     });
 
     if (currentDisplay.workArea.width === mainWindow.getSize()[0] && currentDisplay.workArea.height === mainWindow.getSize()[1]) {
-      mainWindow.setSize(mainWindowSize.width, mainWindowSize.height);
+      mainWindow.setSize(mainWindowOptions.width, mainWindowOptions.height);
     } else {
       mainWindow.setSize(currentDisplay.workArea.width, currentDisplay.workArea.height);
     }

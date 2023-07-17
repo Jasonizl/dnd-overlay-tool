@@ -30,15 +30,6 @@ closeButton.addEventListener('click', () => {
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-window.electron.rerenderGrid(() => {
-  console.log('works'); // 'something'
-  alert('PLEASE HELP ME');
-
-  // TODO rerender here
-});
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 window.electron.setGridSize((size: number) => {
   gridSize = size;
   drawGrid();
