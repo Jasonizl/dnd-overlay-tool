@@ -1,7 +1,7 @@
 {
-  "name": "electron-quick-start-typescript",
+  "name": "dnd-overlay-tool",
   "version": "1.0.0",
-  "description": "A minimal Electron application written with Typescript",
+  "description": "A dnd overlay tool which can show a grid or rotate your monitor",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
@@ -17,7 +17,7 @@
     "demo",
     "typescript"
   ],
-  "author": "GitHub",
+  "author": "@Jasonizl",
   "license": "CC0-1.0",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.33.0",
@@ -26,5 +26,5 @@
     "eslint": "^7.32.0",
     "typescript": "^4.8.3"
   },
-  "dependencies": {}
+  "dependencies":
 }
