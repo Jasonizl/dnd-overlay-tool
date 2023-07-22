@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer, screen } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
@@ -26,3 +26,5 @@ contextBridge.exposeInMainWorld('electron', {
   setGridColor: (cb: (color: string) => void) => ipcRenderer.on('setGridColor', (event, color) => cb(color)),
   setGridThickness: (cb: (thickness: number) => void) => ipcRenderer.on('setGridThickness', (event, thickness) => cb(thickness)),
 });
+
+// https://github.com/electron-react-boilerplate/electron-react-boilerplate/blob/main/src/renderer/preload.d.ts
