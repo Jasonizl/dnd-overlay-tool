@@ -5,9 +5,6 @@
 // Use preload.js to selectively enable features
 // needed in the renderer process.
 
-require('../helpers/main/listener.ts');
-require('../helpers/main/canvas.ts');
-
 /** Grid main->rerender ipc calls */
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

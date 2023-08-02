@@ -35,11 +35,33 @@
       <h5>Displays</h5>
       <button id='reloadDisplays' title='reload'>⟳</button>
     </div>
-
     <hr />
     <div id='displays'>
     </div>
+    <!-- https://codeshack.io/html-styling-tables-example/ -->
+    <h5>Items</h5>
+    <hr />
+    <div id='itemOptions'>
+      <button id='newCircleButton'>◯</button>
+    </div>
+    <div id='tableList'>
+      <table id='tableHeader'>
+        <thead>
+          <tr>
+            <td style='min-width: 100px; overflow-wrap: anywhere'>name</td>
+            <td>type</td>
+            <td style='width: 100%'>actions</td>
+          </tr>
+        </thead>
+        <tbody id='tableBody'>
+        </tbody>
+      </table>
+    </div>
   </div>
+  <script src="./dist/helpers/options/gridSize.js"></script>
+  <script src="./dist/helpers/options/gridBorderColor.js"></script>
+  <script src="./dist/helpers/options/gridThickness.js"></script>
+  <script src="./dist/helpers/options/rotationScript.js"></script>
   <script src="./dist/renderer/options.js"></script>
   </body>
 </html>

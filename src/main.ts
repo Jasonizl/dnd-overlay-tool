@@ -18,11 +18,11 @@ function createOptionsWindow() {
   });
   optionsWindowId = optionsWindow.id;
 
-  const amountOfDisplays = screen.getAllDisplays().length;
+  const displays = screen.getAllDisplays();
   doesRotationScriptExist = fs.existsSync('./ScreenOrientationChangeTool.exe');
 
   optionsWindow.loadFile(path.join(__dirname, '../options.html'));
-  optionsWindow.webContents.send('getDisplays', amountOfDisplays, doesRotationScriptExist);
+  optionsWindow.webContents.send('getDisplays', displays, doesRotationScriptExist);
 }
 
 function createWindow() {
@@ -41,7 +41,7 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
   mainWindowId = mainWindow.id;
 
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -115,15 +115,22 @@ app.whenReady().then(() => {
    */
   ipcMain.on('requestDisplays', () => {
     const optionsWindow = BrowserWindow.fromId(optionsWindowId);
-    const amountOfDisplays = screen.getAllDisplays().length;
-    optionsWindow.webContents.send('getDisplays', amountOfDisplays, doesRotationScriptExist);
-  })
+    const displays = screen.getAllDisplays();
+    optionsWindow.webContents.send('getDisplays', displays, doesRotationScriptExist);
+  });
 
   /**
    * Rotates display with external script.
    */
   ipcMain.on('rotateDisplay', (event, displayIndex, rotation) => {
     execFile('./ScreenOrientationChangeTool.exe', [`${displayIndex}`, `${rotation}`], (err, data) => {
+      setTimeout(() => {
+        const mainWindow = BrowserWindow.fromId(mainWindowId);
+        mainWindow.maximize();
+
+        mainWindow.center();
+      }, 333);
+
       console.log({ err });
       console.log(data.toString());
     });

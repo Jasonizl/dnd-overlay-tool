@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, Display } from 'electron';
 
 /* Exposed functions to use for the main.ts */
 contextBridge.exposeInMainWorld('electron', {
@@ -8,6 +8,6 @@ contextBridge.exposeInMainWorld('electron', {
   requestDisplays: () => ipcRenderer.send('requestDisplays'),
   rotateDisplay: (displayIndex: number, rotation: number) => ipcRenderer.send('rotateDisplay', displayIndex, rotation),
 
-  getDisplays: (cb: (displays: number, enabled: boolean) => void) =>
+  getDisplays: (cb: (displays: Display[], enabled: boolean) => void) =>
     ipcRenderer.on('getDisplays', (event, displays, enabled) => cb(displays, enabled)),
 });
