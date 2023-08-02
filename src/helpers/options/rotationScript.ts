@@ -1,4 +1,5 @@
-const currentDisplayRotation: number[] = [];
+let currentDisplayRotation: number[] = [];
+let initialDisplayRotation: number[] = [];
 
 // can be used to request the displays again. will remove all current displays
 // Will not load the script new
@@ -14,26 +15,27 @@ displayRequestButton.addEventListener('click', () => {
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-window.electron.getDisplays((displays: number, enabled: boolean) => {
+window.electron.getDisplays((displays: any[], enabled: boolean) => {
   const displayDiv = document.getElementById('displays');
+  currentDisplayRotation = [];
 
-  for (let display = 1; display <= displays; display++) {
-    currentDisplayRotation.push(0);
+  for (let displayIndex = 1; displayIndex <= displays.length; displayIndex++) {
+    currentDisplayRotation.push(Math.floor((displays[displayIndex - 1].rotation % 360) / 90));
 
     // outer div
     const newDisplayItem = document.createElement('div');
     newDisplayItem.className = 'displayItem';
 
     const header = document.createElement('h6');
-    header.innerText = `Display ${display}`;
+    header.innerText = `Display ${displayIndex} ${displays[displayIndex - 1].label}`;
 
     const rotateButton = document.createElement('button');
-    rotateButton.id = `rotationButton${display}`;
-    rotateButton.innerText = '🖥️ 0°';
+    rotateButton.id = `rotationButton${displayIndex}`;
+    rotateButton.innerText = `🖥️ ${displays[displayIndex - 1].rotation % 360}°`;
     rotateButton.disabled = !enabled;
 
     const resetButton = document.createElement('button');
-    resetButton.id = `resetRotationButton${display}`;
+    resetButton.id = `resetRotationButton${displayIndex}`;
     resetButton.innerText = 'reset';
     resetButton.disabled = !enabled;
 
@@ -45,20 +47,21 @@ window.electron.getDisplays((displays: number, enabled: boolean) => {
       // to current rotation values
 
       rotateButton.addEventListener('click', () => {
-        const newRotation = currentDisplayRotation[display - 1] + 1;
+        const newRotation = currentDisplayRotation[displayIndex - 1] + 1;
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        window.electron.rotateDisplay(display, newRotation);
+        window.electron.rotateDisplay(displayIndex, newRotation);
         rotateButton.innerText = `🖥️ ${(newRotation * 90) % 360}`;
-        currentDisplayRotation[display - 1] = newRotation % 4;
+        currentDisplayRotation[displayIndex - 1] = newRotation % 4;
       });
 
       resetButton.addEventListener('click', () => {
+        const displayRotation = initialDisplayRotation[displayIndex - 1];
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        window.electron.rotateDisplay(display, 0);
-        rotateButton.innerText = `🖥️ 0`;
-        currentDisplayRotation[display - 1] = 0;
+        window.electron.rotateDisplay(displayIndex, displayRotation);
+        rotateButton.innerText = `🖥️ displayRotation * 90}`;
+        currentDisplayRotation[displayIndex - 1] = displayRotation;
       });
     }
 
@@ -66,6 +69,7 @@ window.electron.getDisplays((displays: number, enabled: boolean) => {
     newDisplayItem.appendChild(rotateButton);
     newDisplayItem.appendChild(resetButton);
 
+    initialDisplayRotation = [...currentDisplayRotation];
     displayDiv.appendChild(newDisplayItem);
   }
 });
