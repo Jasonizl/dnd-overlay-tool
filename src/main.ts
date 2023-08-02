@@ -41,7 +41,7 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
   mainWindowId = mainWindow.id;
 
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -117,7 +117,7 @@ app.whenReady().then(() => {
     const optionsWindow = BrowserWindow.fromId(optionsWindowId);
     const amountOfDisplays = screen.getAllDisplays().length;
     optionsWindow.webContents.send('getDisplays', amountOfDisplays, doesRotationScriptExist);
-  })
+  });
 
   /**
    * Rotates display with external script.

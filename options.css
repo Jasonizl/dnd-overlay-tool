@@ -45,6 +45,7 @@ Button:disabled {
 
 #borderColorPicker {
     width: 100%;
+    cursor: pointer;
 }
 
 #gridThickness {
@@ -58,6 +59,12 @@ Button:disabled {
     display: flex;
     flex-flow: row;
     gap: 8px;
+    width: 100%;
+}
+
+#tableList {
+    display: flex;
+    flex-grow: 1;
     width: 100%;
 }
 
@@ -84,4 +91,67 @@ Button:disabled {
 
 #reloadDisplays {
     flex-grow: unset;
+}
+
+#itemOptions {
+    margin-bottom: 16px;
+    display: flex;
+    width: 100%;
+}
+
+#itemOptions button {
+    font-size: 24px;
+    flex-grow: 1;
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+}
+table td {
+    padding: 15px;
+}
+
+table thead td {
+    background-color: #54585d;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 13px;
+    border: 1px solid #54585d;
+}
+
+table tbody td {
+    color: #636363;
+    border: 1px solid #dddfe1;
+}
+
+table tbody tr {
+    background-color: #f9fafb;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+table tbody tr.active {
+    background-color: thistle;
+    font-size: 13px;
+}
+
+table tbody tr:hover, table tbody tr:nth-child(odd):hover  {
+    background: #dddfe1;
+}
+
+table tbody tr:nth-child(odd):not(.active) {
+    background-color: #ffffff;
+}
+
+table tbody tr input {
+    border: none;
+    display: inline;
+    font-family: inherit;
+    font-size: inherit;
+    background: inherit;
+    padding: 0;
+    width: 100%;
 }
