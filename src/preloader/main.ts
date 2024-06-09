@@ -1,5 +1,14 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+interface Item {
+  name: string;
+  id: number;
+  type: Type;
+  position?: Position;
+  dimension?: Dimension;
+}
+
+
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
 window.addEventListener('DOMContentLoaded', () => {
@@ -25,6 +34,10 @@ contextBridge.exposeInMainWorld('electron', {
   setGridSize: (cb: (size: number) => void) => ipcRenderer.on('setGridSize', (event, size) => cb(size)),
   setGridColor: (cb: (color: string) => void) => ipcRenderer.on('setGridColor', (event, color) => cb(color)),
   setGridThickness: (cb: (thickness: number) => void) => ipcRenderer.on('setGridThickness', (event, thickness) => cb(thickness)),
+
+  addGridElement: (cb: (gridElement: Item) => void) => ipcRenderer.on('addGridElement', (event, gridElement) => cb(gridElement)),
+  //deleteGridElement: (cb: (elementIndex: number) => void) => ipcRenderer.send('deleteGridElement', (event, elementIndex) => cb(elementIndex)),
+
 });
 
 // https://github.com/electron-react-boilerplate/electron-react-boilerplate/blob/main/src/renderer/preload.d.ts

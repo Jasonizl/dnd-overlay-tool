@@ -97,13 +97,13 @@ Button:disabled {
     margin-bottom: 16px;
     display: flex;
     width: 100%;
+    gap: 8px;
 }
 
 #itemOptions button {
-    font-size: 24px;
+    font-size: 18px;
     flex-grow: 1;
 }
-
 
 table {
     border-collapse: collapse;
@@ -111,7 +111,7 @@ table {
     max-width: 100%;
 }
 table td {
-    padding: 15px;
+    padding: 6px;
 }
 
 table thead td {
@@ -138,12 +138,8 @@ table tbody tr.active {
     font-size: 13px;
 }
 
-table tbody tr:hover, table tbody tr:nth-child(odd):hover  {
+table tbody tr:hover {
     background: #dddfe1;
-}
-
-table tbody tr:nth-child(odd):not(.active) {
-    background-color: #ffffff;
 }
 
 table tbody tr input {
@@ -154,4 +150,11 @@ table tbody tr input {
     background: inherit;
     padding: 0;
     width: 100%;
+}
+
+table tbody tr .actions-td {
+  display: flex;
+  flex-flow: row;
+
+  gap: 8px;
 }

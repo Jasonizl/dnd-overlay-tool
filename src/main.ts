@@ -110,6 +110,23 @@ app.whenReady().then(() => {
   });
 
   /**
+   * adds new grid element chosen from the button
+   * of options menu
+   */
+  ipcMain.on('addGridElement', (event, args) => {
+    const mainWindow = BrowserWindow.fromId(mainWindowId);
+    mainWindow.webContents.send('addGridElement', args);
+  });
+
+  /**
+   * deletes grid element via. the id it has set
+   */
+  ipcMain.on('deleteGridElement', (event, args) => {
+    const mainWindow = BrowserWindow.fromId(mainWindowId);
+    mainWindow.webContents.send('deleteGridElement', args);
+  });
+
+  /**
    * sends the getDisplays IPC again to the options window
    * Is invoked from options window
    */
@@ -130,9 +147,6 @@ app.whenReady().then(() => {
 
         mainWindow.center();
       }, 333);
-
-      console.log({ err });
-      console.log(data.toString());
     });
   });
 

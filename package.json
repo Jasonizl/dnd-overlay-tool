@@ -6,7 +6,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "electron-forge start",
+    "start": "tsc && electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
@@ -30,7 +30,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^6.2.1",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
-    "electron": "^24.3.0",
+    "electron": "30.1.0",
     "eslint": "^7.32.0",
     "typescript": "^4.8.3",
     "prettier": "^3.0.0"

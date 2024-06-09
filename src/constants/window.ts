@@ -7,6 +7,6 @@ export const mainWindowOptions: BrowserWindowConstructorOptions = {
 
 export const optionsWindowOptions: BrowserWindowConstructorOptions = {
   title: 'DnD Overlay Tool - Options',
-  height: 640,
-  width: 320,
+  height: 720,
+  width: 400,
 };

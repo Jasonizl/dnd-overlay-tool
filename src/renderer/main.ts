@@ -1,3 +1,13 @@
+interface Item {
+  name: string;
+  id: number;
+  type: Type;
+  position?: Position;
+  dimension?: Dimension;
+  color?: string
+}
+
+
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // No Node.js APIs are available in this process unless
@@ -26,6 +36,27 @@ window.electron.setGridColor((color: string) => {
 window.electron.setGridThickness((thickness: number) => {
   gridThickness = thickness;
   drawGrid();
+});
+
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.electron.addGridElement((gridElement: Item) => {
+  console.log('ADD GRID ELEMENT')
+
+  selectedElementIndex = gridElement.id
+  currentNotAddedDrawableObject = gridElement
+
+  console.log(currentNotAddedDrawableObject)
+  //drawGrid();
+});
+
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.electron.deleteGridElement((elementIndex: number) => {
+  console.log('DELETE GRID ELEMENT')
+  //drawGrid();
 });
 
 drawGrid();
