@@ -41,7 +41,7 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
   mainWindowId = mainWindow.id;
 
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
