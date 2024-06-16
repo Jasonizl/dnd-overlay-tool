@@ -45,8 +45,16 @@
     <h5>Items</h5>
     <hr />
     <div id='itemOptions'>
-      <button id='newCircleButton'>◯</button>
-      <button id='newRectangleButton'>▢</button>
+      <div class='itemOptionsRow'>
+        <button id='newCircleButton'>◯</button>
+        <button id='newRectangleButton'>▢</button>
+      </div>
+      <div class='itemOptionsRow'>
+        <label for='newImageCircle'>Add circular image(s)</label>
+        <input type='file' id='newImageCircle' accept='image/png, image/jpeg, image/webm' multiple placeholder='Circular Images' />
+        <label for='newImageCircle'>Add square image(s)</label>
+        <input type='file' id='newImageRectangle' accept='image/png, image/jpeg, image/webm' multiple placeholder='Square Images' />
+      </div>
     </div>
     <div id='tableList'>
       <table id='tableHeader'>

@@ -108,14 +108,51 @@ Button:disabled {
 #itemOptions {
     margin-bottom: 16px;
     display: flex;
+    flex-flow: column;
     width: 100%;
     gap: 8px;
 }
 
-#itemOptions button {
-    font-size: 18px;
-    flex-grow: 1;
+.itemOptionsRow {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
 }
+
+#itemOptions button, #itemOptions input {
+  font-size: 18px;
+  flex-grow: 1;
+  width: 50%;
+}
+
+#itemOptions input {
+  opacity: 0;
+  width: 0;
+  display: none;
+}
+
+#itemOptions label {
+  flex-grow: 1;
+  font-size: 16px;
+  border: 1px solid #888888;
+  border-radius: 2px;
+  background: #e7e7e7;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  min-height: 22px;
+}
+
+#itemOptions label:hover {
+  cursor: pointer;
+  border: 1px solid #666666;
+  background: #d8d8d8;
+}
+
+
 
 table {
     border-collapse: collapse;
