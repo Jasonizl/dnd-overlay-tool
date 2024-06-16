@@ -48,6 +48,15 @@ window.electron.toggleGrid((active: boolean) => {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 window.electron.addGridElement((gridElement: Item) => {
+
+  // if we have a element in queue to be added, but not set yet, we will att it anyways at a undefined position
+  if (selectedElementIndex !== 0 &&
+    !drawableObjects.some((obj) => obj.id === currentNotAddedDrawableObject.id &&
+    gridElement.id !== currentNotAddedDrawableObject.id))
+  {
+    drawableObjects.push({...currentNotAddedDrawableObject, position: {x: -1000, y: -1000}, dimension: {width: gridElementUnit, height: gridElementUnit}});
+  }
+
   selectedElementIndex = gridElement.id
   currentNotAddedDrawableObject = gridElement
 
