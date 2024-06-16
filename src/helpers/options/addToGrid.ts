@@ -27,6 +27,17 @@ interface Item {
   // color, interactions etc
 }
 
+// https://stackoverflow.com/a/1484514/22217480
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+
 const createNewItem = (name: string, id: number, type: Type, position?: Position, dimension?: Dimension): Item => {
   return {
     name,
@@ -34,7 +45,7 @@ const createNewItem = (name: string, id: number, type: Type, position?: Position
     dimension,
     position,
     type,
-    color: `#${Math.floor(Math.random()*16777215).toString(16)}`
+    color: getRandomColor()
   };
 };
 
@@ -79,15 +90,58 @@ function addElementToTable(id: number, name: string, type: Type, color: string) 
   const typeTd = document.createElement('td');
   const actionsTd = document.createElement('td');
 
+  nameInput.addEventListener('click', (e) => {
+    // stop onclick from row getting event bubble
+    e.stopImmediatePropagation();
+  });
+
   const changeColorButton = document.createElement('input')
   changeColorButton.type = "color";
-  changeColorButton.value = color
+  changeColorButton.value = color;
+  changeColorButton.addEventListener('click', (e) => {
+    // stop onclick from row getting event bubble
+    e.stopImmediatePropagation();
+  });
+  changeColorButton.addEventListener('input', (e) => {
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.electron.changeGridElementColor(id, `${e.target.value}`)
+  });
 
   const deleteButton = document.createElement('button')
   deleteButton.innerText = "Delete";
 
+  // remove item also from table after we fire electron event for main window
+  deleteButton.addEventListener('click', (e) => {
+    e.stopImmediatePropagation();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.electron.deleteGridElement(id);
+    setTimeout(() => {
+      const toBeDeletedRow = document.getElementById(`table-row-item-id-${id}`).remove();
+    }, 150 );
+  });
+
   tableRow.id = `table-row-item-id-${id}`; // id
   tableRow.className = 'active';
+
+  // if row is clicked, we want to select it to be able to move it again
+  tableRow.addEventListener('click', () => {
+    for (let i = 0; i < tableBody.children.length; i++) {
+      tableBody.children[i].classList.remove('active')
+    }
+
+    tableRow.className = 'active';
+
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.electron.moveGridElement(id)
+  });
+
+
   nameInput.value = name;
 
   typeTd.innerText = type;

@@ -19,8 +19,11 @@ contextBridge.exposeInMainWorld('electron', {
   rotateDisplay: (displayIndex: number, rotation: number) => ipcRenderer.send('rotateDisplay', displayIndex, rotation),
 
   addGridElement: (gridElement: Item) => ipcRenderer.send('addGridElement', gridElement),
+  moveGridElement: (elementId: number) => ipcRenderer.send('moveGridElement', elementId),
+  changeGridElementColor: (elementIndex: number, color: string) => ipcRenderer.send('changeGridElementColor', elementIndex, color),
   deleteGridElement: (elementIndex: number) => ipcRenderer.send('deleteGridElement', elementIndex),
 
   getDisplays: (cb: (displays: Display[], enabled: boolean) => void) =>
     ipcRenderer.on('getDisplays', (event, displays, enabled) => cb(displays, enabled)),
+  resetActiveElement: (cb: () => void) => ipcRenderer.on('resetActiveElement', (event) => cb()),
 });

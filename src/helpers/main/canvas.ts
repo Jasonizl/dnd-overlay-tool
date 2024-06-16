@@ -41,6 +41,13 @@ canvas.addEventListener('mousedown', (e) => {
     currentNotAddedDrawableObject = undefined;
     gridElementUnit = gridSize;
     selectedElementIndex = 0;
+
+    // give back command to options window, to set/reset active row
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.electron.resetActiveElement();
+
+
     return;
   }
 
@@ -95,7 +102,7 @@ let gridElementUnit = gridSize
 
 let selectedElementIndex = 0
 let currentNotAddedDrawableObject: Item | undefined  = undefined
-const drawableObjects: Item[] = []
+let drawableObjects: Item[] = []
 const HEADER_HEIGHT = 25
 
 function drawGrid() {
@@ -131,8 +138,9 @@ function drawGrid() {
 
   // draw function for new element
   if(selectedElementIndex !== 0) {
-
     ctx.beginPath();
+    ctx.font = 'bold 14px sans-serif'
+
     // set color to the one of the to be drawn object, but with a small alpha value for transparency
     ctx.fillStyle = `${currentNotAddedDrawableObject?.color}33`;
     if (currentNotAddedDrawableObject.type === 'CircleAOE') {
@@ -146,20 +154,21 @@ function drawGrid() {
 
       // write information about current dimensions
       ctx.fillStyle = '#FFFFFF';
-      ctx.fillText(`${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet radius`, currentMouseX - 18, currentMouseY + 7);
-      ctx.fillText(`${(gridElementUnit / (gridSize / 2)) * 5} feet diameter`, currentMouseX - 18, currentMouseY + 17);
+      ctx.fillText(`${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet radius`, currentMouseX - 18, currentMouseY + 8);
+      ctx.fillText(`${(gridElementUnit / (gridSize / 2)) * 5} feet diameter`, currentMouseX - 18, currentMouseY + 23);
 
     } else if (currentNotAddedDrawableObject.type === 'RectangleAOE') {
       ctx.fillRect(currentMouseX - (gridElementUnit/2), currentMouseY - (gridElementUnit/2) - HEADER_HEIGHT, gridElementUnit, gridElementUnit);
 
       // border
+      ctx.lineWidth = 3;
       ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}bb`;
       ctx.strokeRect(currentMouseX - (gridElementUnit/2), currentMouseY - (gridElementUnit/2) - HEADER_HEIGHT, gridElementUnit, gridElementUnit);
 
 
       // write information about current dimensions
       ctx.fillStyle = '#FFFFFF';
-      ctx.fillText(`${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet`, currentMouseX - 18, currentMouseY + 7);
+      ctx.fillText(`${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet`, currentMouseX - 18, currentMouseY + 8);
     }
 
 
@@ -187,6 +196,7 @@ function drawGrid() {
       ctx.fillRect(offsetX + position.x - (dimensionUnit/2), offsetY + position.y - (dimensionUnit/2) - HEADER_HEIGHT, dimensionUnit, dimensionUnit);
 
       // border
+      ctx.lineWidth = 3;
       ctx.strokeStyle = `${color}bb`;
       ctx.strokeRect(offsetX + position.x - (dimensionUnit/2), offsetY + position.y - (dimensionUnit/2) - HEADER_HEIGHT, dimensionUnit, dimensionUnit);
     }

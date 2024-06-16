@@ -42,21 +42,47 @@ window.electron.setGridThickness((thickness: number) => {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 window.electron.addGridElement((gridElement: Item) => {
-  console.log('ADD GRID ELEMENT')
-
   selectedElementIndex = gridElement.id
   currentNotAddedDrawableObject = gridElement
 
-  console.log(currentNotAddedDrawableObject)
+
+  // don't draw grid, because it will render it at weird position on map when mouse is not there
   //drawGrid();
 });
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.electron.moveGridElement((elementId: number) => {
+  if(elementId === selectedElementIndex) return; // dont act when the same element is selected
+
+  selectedElementIndex = elementId;
+  currentNotAddedDrawableObject = drawableObjects.find((obj) => obj.id === elementId);
+  gridElementUnit = currentNotAddedDrawableObject.dimension.width; // only works as long as everything has same length (width/height)
+
+  // remove the to be moved element from the drawn static elements
+  drawableObjects = drawableObjects.filter((obj) => obj.id !== elementId);
+
+  //drawGrid();
+});
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 window.electron.deleteGridElement((elementIndex: number) => {
-  console.log('DELETE GRID ELEMENT')
-  //drawGrid();
+  drawableObjects = drawableObjects.filter((obj) => obj.id !== elementIndex);
+
+  // reset to ground zero
+  if (currentNotAddedDrawableObject.id === elementIndex) {
+    currentNotAddedDrawableObject = undefined
+    selectedElementIndex = 0;
+  }
+});
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.electron.changeGridElementColor((elementIndex: number, color: string) => {
+  drawableObjects.find((obj) => obj.id === elementIndex).color = color;
+
+  drawGrid();
 });
 
 drawGrid();

@@ -19,6 +19,20 @@ closeButton.addEventListener('click', () => {
   window.electron.closeApp();
 });
 
+// add functionality to increase/decrease size also via keyboard
+window.addEventListener('keydown', (e) => {
+  const radius = gridSize / 2
+
+  if (e.key === '+') {
+    gridElementUnit += radius
+  } else if (e.key === '-') {
+    gridElementUnit = gridElementUnit <= radius ? radius : gridElementUnit - radius
+  }
+
+  drawGrid();
+});
+
+
 window.addEventListener('resize', () => {
   drawGrid();
 });

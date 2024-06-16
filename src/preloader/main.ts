@@ -30,13 +30,16 @@ contextBridge.exposeInMainWorld('electron', {
   maximizeWindow: () => ipcRenderer.send('maximizeWindow'),
   minimizeWindows: () => ipcRenderer.send('minimizeWindows'),
   closeApp: () => ipcRenderer.send('closeApp'),
+  resetActiveElement: () => ipcRenderer.send('resetActiveElement'),
 
   setGridSize: (cb: (size: number) => void) => ipcRenderer.on('setGridSize', (event, size) => cb(size)),
   setGridColor: (cb: (color: string) => void) => ipcRenderer.on('setGridColor', (event, color) => cb(color)),
   setGridThickness: (cb: (thickness: number) => void) => ipcRenderer.on('setGridThickness', (event, thickness) => cb(thickness)),
 
   addGridElement: (cb: (gridElement: Item) => void) => ipcRenderer.on('addGridElement', (event, gridElement) => cb(gridElement)),
-  //deleteGridElement: (cb: (elementIndex: number) => void) => ipcRenderer.send('deleteGridElement', (event, elementIndex) => cb(elementIndex)),
+  moveGridElement: (cb: (elementId: number) => void) => ipcRenderer.on('moveGridElement', (event, elementId) => cb(elementId)),
+  changeGridElementColor: (cb: (elementIndex: number, color: string) => void) => ipcRenderer.on('changeGridElementColor', (event, elementIndex, color) => cb(elementIndex, color)),
+  deleteGridElement: (cb: (elementIndex: number) => void) => ipcRenderer.on('deleteGridElement', (event, elementIndex) => cb(elementIndex)),
 
 });
 
