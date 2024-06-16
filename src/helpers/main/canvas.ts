@@ -15,6 +15,8 @@ interface Item {
   position?: Position;
   dimension?: Dimension;
   color?: string;
+  imageSrcUrl?: string;
+  imageElement?: HTMLImageElement;
 }
 
 
@@ -141,6 +143,61 @@ function drawGrid() {
 
   // grid end
 
+  // draw all elements which are currently also (technically) in the table (not newly added elements)
+  drawableObjects.forEach((element) => {
+    const { type, position, color, imageElement } = element;
+    const dimensionUnit = element.dimension.width; // TODO to be adjusted, when its possible !== height
+
+    ctx.beginPath();
+
+    // set color to the one of the to be drawn object, but with a small alpha value for transparency
+    ctx.fillStyle = `${color}33`;
+    if (type === 'CircleAOE') {
+      ctx.arc(offsetX + position.x, offsetY + position.y - HEADER_HEIGHT, dimensionUnit - 2, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // border
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = `${color}bb`;
+
+    } else if (type === 'RectangleAOE') {
+      ctx.fillRect(offsetX + position.x - (dimensionUnit/2), offsetY + position.y - (dimensionUnit/2) - HEADER_HEIGHT, dimensionUnit, dimensionUnit);
+
+      // border
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = `${color}bb`;
+      ctx.strokeRect(offsetX + position.x - (dimensionUnit/2), offsetY + position.y - (dimensionUnit/2) - HEADER_HEIGHT, dimensionUnit, dimensionUnit);
+    } else if (type === 'CircleImage') {
+      // border
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = `${color}bb`;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(offsetX + position.x, offsetY + position.y - HEADER_HEIGHT, dimensionUnit - 2, 0, Math.PI * 2, true);
+      ctx.closePath();
+      ctx.clip();
+
+      ctx.drawImage(imageElement, offsetX + position.x - dimensionUnit , offsetY + position.y - dimensionUnit - HEADER_HEIGHT, dimensionUnit*2, dimensionUnit*2);
+
+      ctx.beginPath();
+      ctx.arc(offsetX + position.x, offsetY + position.y - HEADER_HEIGHT, dimensionUnit - 2, 0, Math.PI * 2, true);
+      ctx.clip();
+      ctx.closePath();
+      ctx.restore();
+    } else if (type === 'RectangleImage') {
+      ctx.drawImage(imageElement, offsetX + position.x - (dimensionUnit/2), offsetY + position.y - (dimensionUnit/2) - HEADER_HEIGHT, dimensionUnit, dimensionUnit);
+
+      // border
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = `${color}bb`;
+      ctx.strokeRect(offsetX + position.x - (dimensionUnit/2), offsetY + position.y - (dimensionUnit/2) - HEADER_HEIGHT, dimensionUnit, dimensionUnit);
+
+    }
+
+    ctx.stroke();
+  });
+
   // draw function for new element
   if(selectedElementIndex !== 0) {
     ctx.beginPath();
@@ -174,43 +231,37 @@ function drawGrid() {
       // write information about current dimensions
       ctx.fillStyle = '#FFFFFF';
       ctx.fillText(`${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet`, currentMouseX - 18, currentMouseY + 8);
+    } else if (currentNotAddedDrawableObject.type === 'CircleImage') {
+      // border
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}bb`;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(currentMouseX, currentMouseY - HEADER_HEIGHT, gridElementUnit - 2, 0, Math.PI * 2, true);
+      ctx.closePath();
+      ctx.clip();
+
+      ctx.drawImage(currentNotAddedDrawableObject.imageElement, currentMouseX - gridElementUnit , currentMouseY - gridElementUnit - HEADER_HEIGHT, gridElementUnit*2, gridElementUnit*2);
+
+      ctx.beginPath();
+      ctx.arc(currentMouseX, currentMouseY - HEADER_HEIGHT, gridElementUnit - 2, 0, Math.PI * 2, true);
+      ctx.clip();
+      ctx.closePath();
+      ctx.restore();
+    } else if (currentNotAddedDrawableObject.type === 'RectangleImage') {
+
+      ctx.drawImage(currentNotAddedDrawableObject.imageElement, currentMouseX - (gridElementUnit/2), currentMouseY - (gridElementUnit/2) - HEADER_HEIGHT, gridElementUnit, gridElementUnit);
+
+      // border
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}bb`;
+      ctx.strokeRect(currentMouseX - (gridElementUnit/2), currentMouseY - (gridElementUnit/2) - HEADER_HEIGHT, gridElementUnit, gridElementUnit);
     }
 
 
     ctx.stroke();
   }
-
-  // draw all elements which are currently also (technically) in the table
-  drawableObjects.forEach((element) => {
-    const { type, position, color } = element;
-    const dimensionUnit = element.dimension.width; // TODO to be adjusted, when its possible !== height
-
-    ctx.beginPath();
-
-    // set color to the one of the to be drawn object, but with a small alpha value for transparency
-    ctx.fillStyle = `${color}33`;
-    if (type === 'CircleAOE') {
-      ctx.arc(offsetX + position.x, offsetY + position.y - HEADER_HEIGHT, dimensionUnit - 2, 0, 2 * Math.PI);
-      ctx.fill();
-
-      // border
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = `${color}bb`;
-
-    } else if (type === 'RectangleAOE') {
-      ctx.fillRect(offsetX + position.x - (dimensionUnit/2), offsetY + position.y - (dimensionUnit/2) - HEADER_HEIGHT, dimensionUnit, dimensionUnit);
-
-      // border
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = `${color}bb`;
-      ctx.strokeRect(offsetX + position.x - (dimensionUnit/2), offsetY + position.y - (dimensionUnit/2) - HEADER_HEIGHT, dimensionUnit, dimensionUnit);
-    }
-
-    ctx.stroke();
-  });
-  //ctx.strokeStyle = gridColor;
-  //ctx.lineWidth = gridThickness;
-  //ctx.stroke();
 }
 
 drawGrid()

@@ -11,7 +11,9 @@ interface Dimension {
 enum Type {
   Grid = 'Grid',
   CircleAOE = 'CircleAOE',
-  RectangleAOE = "RectangleAOE"
+  RectangleAOE = "RectangleAOE",
+  CircleImage = "CircleImage",
+  RectangleImage = "RectangleImage",
   // for later
   // cones, rectangle,
 }
@@ -23,6 +25,7 @@ interface Item {
   position?: Position;
   dimension?: Dimension;
   color?: string;
+  imageSrcUrl?: string;
 
   // color, interactions etc
 }
@@ -38,14 +41,17 @@ function getRandomColor() {
 }
 
 
-const createNewItem = (name: string, id: number, type: Type, position?: Position, dimension?: Dimension): Item => {
+const createNewItem = (item: Item): Item => {
+  const { name, id, dimension, position, type, imageSrcUrl } = item;
+
   return {
     name,
     id,
     dimension,
     position,
     type,
-    color: getRandomColor()
+    color: getRandomColor(),
+    imageSrcUrl
   };
 };
 
@@ -54,10 +60,13 @@ const createNewItem = (name: string, id: number, type: Type, position?: Position
 const addNewCircleButton = document.getElementById('newCircleButton');
 const addNewRectangleButton = document.getElementById('newRectangleButton');
 
+const addNewImageCircleInput = document.getElementById('newImageCircle') as HTMLInputElement;
+const addNewImageRectangleInput = document.getElementById('newImageRectangle') as HTMLInputElement;
+
 addNewCircleButton.addEventListener('click', () => {
   const tableBody = document.getElementById('tableBody');
 
-  const newItem = createNewItem('Circle AOE', tableBody.children.length, Type.CircleAOE, undefined, undefined);
+  const newItem = createNewItem({ name: 'Circle AOE', id: tableBody.children.length, type: Type.CircleAOE });
   addElementToTable(newItem.id, newItem.name, newItem.type, newItem.color);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -68,12 +77,55 @@ addNewCircleButton.addEventListener('click', () => {
 addNewRectangleButton.addEventListener('click', () => {
   const tableBody = document.getElementById('tableBody');
 
-  const newItem = createNewItem('Rectangle AOE', tableBody.children.length,  Type.RectangleAOE, undefined, undefined);
+  const newItem = createNewItem({ name: 'Rectangle AOE', id: tableBody.children.length, type: Type.RectangleAOE });
   addElementToTable(newItem.id, newItem.name, newItem.type, newItem.color);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   window.electron.addGridElement(newItem);
+});
+
+
+// event handler for adding images, can handle multiple
+addNewImageCircleInput.addEventListener('change', () => {
+  const currentFiles = addNewImageCircleInput.files;
+
+  if (currentFiles.length === 0) {
+    return
+  }
+
+  for (const file of Array.from(currentFiles)) {
+    const tableBody = document.getElementById('tableBody');
+    const imageSrc = URL.createObjectURL(file);
+
+    const newItem = createNewItem({ name: file.name.split('.')[0], id: tableBody.children.length, type: Type.CircleImage, imageSrcUrl: imageSrc });
+    addElementToTable(newItem.id, newItem.name, newItem.type, newItem.color);
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.electron.addGridElement(newItem);
+  }
+});
+
+// event handler for adding images, can handle multiple
+addNewImageRectangleInput.addEventListener('change', () => {
+  const currentFiles = addNewImageRectangleInput.files;
+
+  if (currentFiles.length === 0) {
+    return
+  }
+
+  for (const file of Array.from(currentFiles)) {
+    const tableBody = document.getElementById('tableBody');
+    const imageSrc = URL.createObjectURL(file);
+
+    const newItem = createNewItem({ name: file.name.split('.')[0], id: tableBody.children.length, type: Type.RectangleImage, imageSrcUrl: imageSrc });
+    addElementToTable(newItem.id, newItem.name, newItem.type, newItem.color);
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.electron.addGridElement(newItem);
+  }
 });
 
 function addElementToTable(id: number, name: string, type: Type, color: string) {

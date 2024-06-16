@@ -48,6 +48,8 @@ window.electron.toggleGrid((active: boolean) => {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 window.electron.addGridElement((gridElement: Item) => {
+  console.log(gridElement);
+
 
   // if we have a element in queue to be added, but not set yet, we will att it anyways at a undefined position
   if (selectedElementIndex !== 0 &&
@@ -58,8 +60,16 @@ window.electron.addGridElement((gridElement: Item) => {
   }
 
   selectedElementIndex = gridElement.id
-  currentNotAddedDrawableObject = gridElement
 
+  // when we handle a image type element, we want to create the img here for the ctx/canvas later to draw
+  if (gridElement.type === 'CircleImage' || gridElement.type === 'RectangleImage') {
+    const newImageElement = document.createElement("img");
+    newImageElement.src = gridElement.imageSrcUrl;
+
+    currentNotAddedDrawableObject = { ...gridElement, imageElement: newImageElement}
+  } else {
+    currentNotAddedDrawableObject = gridElement
+  }
 
   // don't draw grid, because it will render it at weird position on map when mouse is not there
   //drawGrid();
