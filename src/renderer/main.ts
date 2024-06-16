@@ -92,6 +92,21 @@ window.electron.moveGridElement((elementId: number) => {
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+window.electron.changeGridElementColor((elementIndex: number, color: string) => {
+  drawableObjects.find((obj) => obj.id === elementIndex).color = color;
+  drawGrid();
+});
+
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.electron.setVisibilityGridElement((elementIndex: number, active: boolean) => {
+  drawableObjects.find((obj) => obj.id === elementIndex).visible = active;
+  drawGrid();
+});
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 window.electron.deleteGridElement((elementIndex: number) => {
   drawableObjects = drawableObjects.filter((obj) => obj.id !== elementIndex);
 
@@ -100,14 +115,6 @@ window.electron.deleteGridElement((elementIndex: number) => {
     currentNotAddedDrawableObject = undefined
     selectedElementIndex = 0;
   }
-});
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-window.electron.changeGridElementColor((elementIndex: number, color: string) => {
-  drawableObjects.find((obj) => obj.id === elementIndex).color = color;
-
-  drawGrid();
 });
 
 drawGrid();

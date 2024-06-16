@@ -22,6 +22,7 @@ interface Item {
   name: string;
   id: number;
   type: Type;
+  visible?: boolean;
   position?: Position;
   dimension?: Dimension;
   color?: string;
@@ -47,6 +48,7 @@ const createNewItem = (item: Item): Item => {
   return {
     name,
     id,
+    visible: true,
     dimension,
     position,
     type,
@@ -176,13 +178,33 @@ function addElementToTable(id: number, name: string, type: Type, color: string) 
     }, 150 );
   });
 
+  const visibilityButton = document.createElement('button')
+  visibilityButton.innerText = "👁️";
+  visibilityButton.addEventListener('click', (e) => {
+    e.stopImmediatePropagation();
+
+    const active = !visibilityButton.innerText.includes('👁️');
+
+    if (active) {
+      visibilityButton.innerText = visibilityButton.innerText.replace('⛔', '👁️');
+    } else {
+      visibilityButton.innerText = visibilityButton.innerText.replace('👁️', '⛔');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.electron.setVisibilityGridElement(id, active);
+  });
+
+
+
   tableRow.id = `table-row-item-id-${id}`; // id
   tableRow.className = 'active';
 
   // if row is clicked, we want to select it to be able to move it again
   tableRow.addEventListener('click', () => {
     for (let i = 0; i < tableBody.children.length; i++) {
-      tableBody.children[i].classList.remove('active')
+      tableBody.children[i].classList.remove('active');
     }
 
     tableRow.className = 'active';
@@ -190,7 +212,7 @@ function addElementToTable(id: number, name: string, type: Type, color: string) 
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    window.electron.moveGridElement(id)
+    window.electron.moveGridElement(id);
   });
 
 
@@ -198,11 +220,12 @@ function addElementToTable(id: number, name: string, type: Type, color: string) 
 
   typeTd.innerText = type;
 
-  actionsTd.className='actions-td'
+  actionsTd.className='actions-td';
 
   nameTd.appendChild(nameInput);
   actionsTd.appendChild(changeColorButton);
   actionsTd.appendChild(deleteButton);
+  actionsTd.appendChild(visibilityButton);
   tableRow.appendChild(nameTd);
   tableRow.appendChild(typeTd);
   tableRow.appendChild(actionsTd);

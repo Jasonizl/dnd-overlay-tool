@@ -40,6 +40,7 @@ contextBridge.exposeInMainWorld('electron', {
   addGridElement: (cb: (gridElement: Item) => void) => ipcRenderer.on('addGridElement', (event, gridElement) => cb(gridElement)),
   moveGridElement: (cb: (elementId: number) => void) => ipcRenderer.on('moveGridElement', (event, elementId) => cb(elementId)),
   changeGridElementColor: (cb: (elementIndex: number, color: string) => void) => ipcRenderer.on('changeGridElementColor', (event, elementIndex, color) => cb(elementIndex, color)),
+  setVisibilityGridElement: (cb: (elementId: number, active: boolean) => void) => ipcRenderer.on('setVisibilityGridElement', (event, elementId, active) => cb(elementId, active)),
   deleteGridElement: (cb: (elementIndex: number) => void) => ipcRenderer.on('deleteGridElement', (event, elementIndex) => cb(elementIndex)),
 
 });

@@ -12,6 +12,7 @@ interface Item {
   name: string;
   id: number;
   type: Type;
+  visible?: boolean;
   position?: Position;
   dimension?: Dimension;
   color?: string;
@@ -145,8 +146,11 @@ function drawGrid() {
 
   // draw all elements which are currently also (technically) in the table (not newly added elements)
   drawableObjects.forEach((element) => {
-    const { type, position, color, imageElement } = element;
+    const { type, position, color, imageElement, visible } = element;
     const dimensionUnit = element.dimension.width; // TODO to be adjusted, when its possible !== height
+
+    // if element visibility is set to false, skip render process for this element
+    if(!visible) { return; }
 
     ctx.beginPath();
 

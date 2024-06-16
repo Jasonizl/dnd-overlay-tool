@@ -151,6 +151,23 @@ app.whenReady().then(() => {
     mainWindow.focus();
   });
 
+  /**
+   * changes grid element color via. the id it has set
+   */
+  ipcMain.on('changeGridElementColor', (event, elementIndex, color) => {
+    const mainWindow = BrowserWindow.fromId(mainWindowId);
+    mainWindow.webContents.send('changeGridElementColor', elementIndex, color);
+  });
+
+
+  /**
+   * changes grid element color via. the id it has set
+   */
+  ipcMain.on('setVisibilityGridElement', (event, elementId, active) => {
+    const mainWindow = BrowserWindow.fromId(mainWindowId);
+    mainWindow.webContents.send('setVisibilityGridElement', elementId, active);
+  });
+
 
   /**
    * deletes grid element via. the id it has set
@@ -160,13 +177,6 @@ app.whenReady().then(() => {
     mainWindow.webContents.send('deleteGridElement', args);
   });
 
-  /**
-   * changes grid element color via. the id it has set
-   */
-  ipcMain.on('changeGridElementColor', (event, elementIndex, color) => {
-    const mainWindow = BrowserWindow.fromId(mainWindowId);
-    mainWindow.webContents.send('changeGridElementColor', elementIndex, color);
-  });
 
   /**
    * sends the getDisplays IPC again to the options window
