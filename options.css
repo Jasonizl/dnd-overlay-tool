@@ -7,10 +7,6 @@ h1, h2, h3, h4, h5, h6 {
     margin: 16px 0 0;
 }
 
-h5:first-of-type {
-    margin: 0;
-}
-
 hr {
     width: 100%;
 }
@@ -77,6 +73,10 @@ Button:disabled {
     flex-grow: 1;
 }
 
+.displayItem h6 {
+  margin: 0;
+}
+
 .displayItem:last-of-type {
     padding-right: 0;
     border-right: none;
@@ -89,8 +89,20 @@ Button:disabled {
     margin-top: 16px
 }
 
+.headerWithTitleAndElement:first-of-type {
+  margin: 0;
+}
+
+.headerWithTitleAndElement h5 {
+  margin: 0;
+}
+
 #reloadDisplays {
-    flex-grow: unset;
+  flex-grow: unset;
+}
+
+#gridToggle {
+  flex-grow: unset;
 }
 
 #itemOptions {

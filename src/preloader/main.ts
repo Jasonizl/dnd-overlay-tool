@@ -32,6 +32,7 @@ contextBridge.exposeInMainWorld('electron', {
   closeApp: () => ipcRenderer.send('closeApp'),
   resetActiveElement: () => ipcRenderer.send('resetActiveElement'),
 
+  toggleGrid: (cb: (active: boolean) => void) => ipcRenderer.on('toggleGrid', (event, active) => cb(active)),
   setGridSize: (cb: (size: number) => void) => ipcRenderer.on('setGridSize', (event, size) => cb(size)),
   setGridColor: (cb: (color: string) => void) => ipcRenderer.on('setGridColor', (event, color) => cb(color)),
   setGridThickness: (cb: (thickness: number) => void) => ipcRenderer.on('setGridThickness', (event, thickness) => cb(thickness)),

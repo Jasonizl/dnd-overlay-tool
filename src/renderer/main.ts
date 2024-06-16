@@ -38,6 +38,12 @@ window.electron.setGridThickness((thickness: number) => {
   drawGrid();
 });
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.electron.toggleGrid((active: boolean) => {
+  gridActive = active;
+  drawGrid();
+});
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

@@ -98,12 +98,13 @@ canvas.addEventListener('wheel', (e) => {
 let gridSize = 80;
 let gridColor = 'black';
 let gridThickness = 1;
-let gridElementUnit = gridSize
+let gridElementUnit = gridSize;
+let gridActive = true;
 
-let selectedElementIndex = 0
-let currentNotAddedDrawableObject: Item | undefined  = undefined
-let drawableObjects: Item[] = []
-const HEADER_HEIGHT = 25
+let selectedElementIndex = 0;
+let currentNotAddedDrawableObject: Item | undefined  = undefined;
+let drawableObjects: Item[] = [];
+const HEADER_HEIGHT = 25;
 
 function drawGrid() {
 
@@ -114,25 +115,29 @@ function drawGrid() {
   // cleanup
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // grid width and height
-  const bw = canvas.width;
-  const bh = canvas.height;
-  ctx.beginPath();
-  ctx.strokeStyle = gridColor;
+  // start grid
+  // render grid only when its set active (default=true)
+  if(gridActive) {
+    // grid width and height
+    const bw = canvas.width;
+    const bh = canvas.height;
+    ctx.beginPath();
+    ctx.strokeStyle = gridColor;
 
-  for (let x = offsetX; x <= bw; x += gridSize) {
-    ctx.moveTo(0.5 + x, 0);
-    ctx.lineTo(0.5 + x, bh);
+    for (let x = offsetX; x <= bw; x += gridSize) {
+      ctx.moveTo(0.5 + x, 0);
+      ctx.lineTo(0.5 + x, bh);
+    }
+
+    for (let y = offsetY; y <= bh; y += gridSize) {
+      ctx.moveTo(0, 0.5 + y);
+      ctx.lineTo(bw, 0.5 + y);
+    }
+
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = gridThickness;
+    ctx.stroke();
   }
-
-  for (let y = offsetY; y <= bh; y += gridSize) {
-    ctx.moveTo(0, 0.5 + y);
-    ctx.lineTo(bw, 0.5 + y);
-  }
-
-  ctx.strokeStyle = gridColor;
-  ctx.lineWidth = gridThickness;
-  ctx.stroke();
 
   // grid end
 

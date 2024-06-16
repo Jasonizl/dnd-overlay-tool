@@ -118,6 +118,16 @@ app.whenReady().then(() => {
   });
 
   /**
+   * sets whether grid should be rendered or not
+   * IPC from options renderer to main renderer
+   */
+  ipcMain.on('toggleGrid', (event, active) => {
+    const mainWindow = BrowserWindow.fromId(mainWindowId);
+    mainWindow.webContents.send('toggleGrid', active);
+  });
+
+
+  /**
    * adds new grid element chosen from the button
    * of options menu
    */

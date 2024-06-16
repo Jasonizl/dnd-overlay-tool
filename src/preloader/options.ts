@@ -12,6 +12,7 @@ interface Item {
 
 /* Exposed functions to use for the main.ts */
 contextBridge.exposeInMainWorld('electron', {
+  toggleGrid: (active: boolean) => ipcRenderer.send('toggleGrid', active),
   setGridSize: (size: number) => ipcRenderer.send('setGridSize', size),
   setGridColor: (color: string) => ipcRenderer.send('setGridColor', color),
   setGridThickness: (thickness: number) => ipcRenderer.send('setGridThickness', thickness),
