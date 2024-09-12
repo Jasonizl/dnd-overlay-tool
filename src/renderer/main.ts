@@ -3,6 +3,7 @@ interface Item {
   id: number;
   type: Type;
   position?: Position;
+  position2?: Position; // used for triangles
   dimension?: Dimension;
   color?: string
 }

@@ -14,6 +14,7 @@ enum Type {
   RectangleAOE = "RectangleAOE",
   CircleImage = "CircleImage",
   RectangleImage = "RectangleImage",
+  ConeAOE = "ConeAOE"
   // for later
   // cones, rectangle,
 }
@@ -61,6 +62,7 @@ const createNewItem = (item: Item): Item => {
 
 const addNewCircleButton = document.getElementById('newCircleButton');
 const addNewRectangleButton = document.getElementById('newRectangleButton');
+const addNewConeButton = document.getElementById('newConeButton');
 
 const addNewImageCircleInput = document.getElementById('newImageCircle') as HTMLInputElement;
 const addNewImageRectangleInput = document.getElementById('newImageRectangle') as HTMLInputElement;
@@ -80,6 +82,17 @@ addNewRectangleButton.addEventListener('click', () => {
   const tableBody = document.getElementById('tableBody');
 
   const newItem = createNewItem({ name: 'Rectangle AOE', id: tableBody.children.length, type: Type.RectangleAOE });
+  addElementToTable(newItem.id, newItem.name, newItem.type, newItem.color);
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  window.electron.addGridElement(newItem);
+});
+
+addNewConeButton.addEventListener('click', () => {
+  const tableBody = document.getElementById('tableBody');
+
+  const newItem = createNewItem({ name: 'Cone AOE', id: tableBody.children.length, type: Type.ConeAOE });
   addElementToTable(newItem.id, newItem.name, newItem.type, newItem.color);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -39,7 +39,19 @@ let scrolling = false;
 canvas.addEventListener('mousedown', (e) => {
   // middle mouse button resets offset to 0
   if(selectedElementIndex !== 0 || currentNotAddedDrawableObject !== undefined) {
-    drawableObjects.push({...currentNotAddedDrawableObject, position: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: gridElementUnit, height: gridElementUnit}});
+    // special handling for ConeAOE
+    if(currentNotAddedDrawableObject.type === 'ConeAOE') {
+      if(currentNotAddedDrawableObject.position === undefined) {
+        currentNotAddedDrawableObject = {...currentNotAddedDrawableObject, position: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}};
+        // we return early, because a second click has to be made when adding a ConeAOE
+        return;
+      } else {
+        // second click, we will add the second position and add it to our drawableObjects
+        drawableObjects.push({...currentNotAddedDrawableObject, position2: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: gridElementUnit, height: gridElementUnit}})
+      }
+    } else {
+      drawableObjects.push({...currentNotAddedDrawableObject, position: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: gridElementUnit, height: gridElementUnit}});
+    }
 
     currentNotAddedDrawableObject = undefined;
     gridElementUnit = gridSize;
@@ -261,8 +273,51 @@ function drawGrid() {
       ctx.lineWidth = 3;
       ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}bb`;
       ctx.strokeRect(currentMouseX - (gridElementUnit/2), currentMouseY - (gridElementUnit/2) - HEADER_HEIGHT, gridElementUnit, gridElementUnit);
-    }
+    } else if (currentNotAddedDrawableObject.type === 'ConeAOE') {
 
+      // only draw a dot to highlight starting point, if there is no position set right now
+      if (currentNotAddedDrawableObject.position === undefined) {
+        ctx.arc(offsetX + currentMouseX, offsetY + currentMouseY - HEADER_HEIGHT, 5, 0, 2 * Math.PI); // TODO something is wonky here when grid is moved
+        ctx.fill();
+
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}ff`;
+      }
+      // otherwise we draw the to be drawn cone, because we have the starting position
+      else {
+        const p1 = {x: offsetX + currentNotAddedDrawableObject.position.x, y: offsetY + currentNotAddedDrawableObject.position.y - HEADER_HEIGHT};
+        const p2 = {x: offsetX + currentMouseX, y: offsetY + currentMouseY - HEADER_HEIGHT};
+
+        // minimum of 15 degrees for the cone
+        const coneAngle = (gridElementUnit / (gridSize / 2)) * 15
+
+        // euclidean distance https://stackoverflow.com/a/20916978/22217480 to get the height of the cone
+        const h = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+        const base = 2 * h * Math.tan(((coneAngle * Math.PI) / 180) / 2);
+
+        // get rotation with starting point from p1
+        const rotationVector = {x: p2.x - p1.x, y: p2.y - p1.y};
+        const rotation = Math.atan2(rotationVector.y, rotationVector.x) + (Math.PI / 2)
+        const rotationDegree = rotation * (180 / Math.PI);
+
+        // positions of the two other points in the triangle (basic formular)
+        const coneP1 = {x: (offsetX + currentMouseX) + (-1 * (base / 2)), y: offsetY + currentMouseY - HEADER_HEIGHT}
+        const coneP2 = {x: (offsetX + currentMouseX) + (base / 2), y: offsetY + currentMouseY - HEADER_HEIGHT}
+
+        // adjusted positions with rotation in relation to p2 (p2 is the center of both of these)
+        const rotatedConeP1 = {x: p2.x + ((coneP1.x - p2.x) * Math.cos(rotation)) - ((coneP1.y - p2.y) * Math.sin(rotation)), y: p2.y + ((coneP1.x - p2.x) * Math.sin(rotation)) + ((coneP1.y - p2.y) * Math.cos(rotation))}
+        const rotatedConeP2 = {x: p2.x + ((coneP2.x - p2.x) * Math.cos(rotation)) - ((coneP2.y - p2.y) * Math.sin(rotation)), y: p2.y + ((coneP2.x - p2.x) * Math.sin(rotation)) + ((coneP2.y - p2.y) * Math.cos(rotation))}
+
+        // TODO swap this to a moveTo / lineTo to draw rectangle
+        ctx.arc(p1.x, p1.y, 5, 0, 2 * Math.PI);
+        ctx.arc(rotatedConeP1.x, rotatedConeP1.y, 5, 0, 2 * Math.PI);
+        ctx.arc(rotatedConeP2.x, rotatedConeP2.y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}ff`;
+      }
+    }
 
     ctx.stroke();
   }
