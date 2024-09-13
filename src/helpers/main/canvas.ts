@@ -158,7 +158,7 @@ function drawGrid() {
 
   // draw all elements which are currently also (technically) in the table (not newly added elements)
   drawableObjects.forEach((element) => {
-    const { type, position, color, imageElement, visible } = element;
+    const { type, position, position2, color, imageElement, visible } = element;
     const dimensionUnit = element.dimension.width; // TODO to be adjusted, when its possible !== height
 
     // if element visibility is set to false, skip render process for this element
@@ -208,7 +208,42 @@ function drawGrid() {
       ctx.lineWidth = 3;
       ctx.strokeStyle = `${color}bb`;
       ctx.strokeRect(offsetX + position.x - (dimensionUnit/2), offsetY + position.y - (dimensionUnit/2) - HEADER_HEIGHT, dimensionUnit, dimensionUnit);
+    } else if (type === 'ConeAOE') {
+      const p1 = {x: offsetX + position.x, y: offsetY + position.y - HEADER_HEIGHT};
+      const p2 = {x: offsetX + position2.x, y: offsetY + position2.y - HEADER_HEIGHT};
 
+      // minimum of 15 degrees for the cone
+      const coneAngle = (gridElementUnit / (gridSize / 2)) * 15
+
+      // euclidean distance https://stackoverflow.com/a/20916978/22217480 to get the height of the cone
+      const h = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+      const base = 2 * h * Math.tan(((coneAngle * Math.PI) / 180) / 2);
+
+      // get rotation with starting point from p1
+      const rotationVector = {x: p2.x - p1.x, y: p2.y - p1.y};
+      const rotation = Math.atan2(rotationVector.y, rotationVector.x) + (Math.PI / 2)
+      const rotationDegree = rotation * (180 / Math.PI);
+
+      // positions of the two other points in the triangle (basic formular)
+      const coneP1 = {x: p2.x + (-1 * (base / 2)), y: p2.y}
+      const coneP2 = {x: p2.x + (base / 2), y: p2.y}
+
+      // adjusted positions with rotation in relation to p2 (p2 is the center of both of these)
+      const rotatedConeP1 = {x: p2.x + ((coneP1.x - p2.x) * Math.cos(rotation)) - ((coneP1.y - p2.y) * Math.sin(rotation)), y: p2.y + ((coneP1.x - p2.x) * Math.sin(rotation)) + ((coneP1.y - p2.y) * Math.cos(rotation))}
+      const rotatedConeP2 = {x: p2.x + ((coneP2.x - p2.x) * Math.cos(rotation)) - ((coneP2.y - p2.y) * Math.sin(rotation)), y: p2.y + ((coneP2.x - p2.x) * Math.sin(rotation)) + ((coneP2.y - p2.y) * Math.cos(rotation))}
+
+      const cone = new Path2D();
+      cone.moveTo(p1.x, p1.y);
+      cone.lineTo(rotatedConeP1.x, rotatedConeP1.y);
+      cone.lineTo(rotatedConeP2.x, rotatedConeP2.y);
+      cone.lineTo(p1.x, p1.y);
+      cone.closePath();
+
+      ctx.fill(cone, 'nonzero')
+
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = `${color}bb`;
+      ctx.stroke(cone);
     }
 
     ctx.stroke();
@@ -308,14 +343,18 @@ function drawGrid() {
         const rotatedConeP1 = {x: p2.x + ((coneP1.x - p2.x) * Math.cos(rotation)) - ((coneP1.y - p2.y) * Math.sin(rotation)), y: p2.y + ((coneP1.x - p2.x) * Math.sin(rotation)) + ((coneP1.y - p2.y) * Math.cos(rotation))}
         const rotatedConeP2 = {x: p2.x + ((coneP2.x - p2.x) * Math.cos(rotation)) - ((coneP2.y - p2.y) * Math.sin(rotation)), y: p2.y + ((coneP2.x - p2.x) * Math.sin(rotation)) + ((coneP2.y - p2.y) * Math.cos(rotation))}
 
-        // TODO swap this to a moveTo / lineTo to draw rectangle
-        ctx.arc(p1.x, p1.y, 5, 0, 2 * Math.PI);
-        ctx.arc(rotatedConeP1.x, rotatedConeP1.y, 5, 0, 2 * Math.PI);
-        ctx.arc(rotatedConeP2.x, rotatedConeP2.y, 5, 0, 2 * Math.PI);
-        ctx.fill();
+        const cone = new Path2D();
+        cone.moveTo(p1.x, p1.y);
+        cone.lineTo(rotatedConeP1.x, rotatedConeP1.y);
+        cone.lineTo(rotatedConeP2.x, rotatedConeP2.y);
+        cone.lineTo(p1.x, p1.y);
+        cone.closePath();
+
+        ctx.fill(cone, 'nonzero')
 
         ctx.lineWidth = 3;
         ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}ff`;
+        ctx.stroke(cone);
       }
     }
 
