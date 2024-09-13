@@ -47,7 +47,7 @@ canvas.addEventListener('mousedown', (e) => {
         return;
       } else {
         // second click, we will add the second position and add it to our drawableObjects
-        drawableObjects.push({...currentNotAddedDrawableObject, position2: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: gridElementUnit, height: gridElementUnit}})
+        drawableObjects.push({...currentNotAddedDrawableObject, position2: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: Math.round((gridElementUnit / (gridSize / 2)) * 15), height: Math.round((gridElementUnit / (gridSize / 2)) * 15)}})
       }
     } else {
       drawableObjects.push({...currentNotAddedDrawableObject, position: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: gridElementUnit, height: gridElementUnit}});
@@ -213,7 +213,7 @@ function drawGrid() {
       const p2 = {x: offsetX + position2.x, y: offsetY + position2.y - HEADER_HEIGHT};
 
       // minimum of 15 degrees for the cone
-      const coneAngle = (gridElementUnit / (gridSize / 2)) * 15
+      const coneAngle = dimensionUnit;
 
       // euclidean distance https://stackoverflow.com/a/20916978/22217480 to get the height of the cone
       const h = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
@@ -224,7 +224,7 @@ function drawGrid() {
       const rotation = Math.atan2(rotationVector.y, rotationVector.x) + (Math.PI / 2)
       const rotationDegree = rotation * (180 / Math.PI);
 
-      // positions of the two other points in the triangle (basic formular)
+      // positions of the two other points in the triangle (basic formula)
       const coneP1 = {x: p2.x + (-1 * (base / 2)), y: p2.y}
       const coneP2 = {x: p2.x + (base / 2), y: p2.y}
 
