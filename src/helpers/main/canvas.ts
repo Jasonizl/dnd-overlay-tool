@@ -46,7 +46,7 @@ canvas.addEventListener('mousedown', (e) => {
         // we return early, because a second click has to be made when adding a ConeAOE
         return;
       } else {
-        // second click, we will add the second position and add it to our drawableObjects
+        // second click, we will add the second position and add it to our drawableObjects. dimension being the angle
         drawableObjects.push({...currentNotAddedDrawableObject, position2: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: Math.round((gridElementUnit / (gridSize / 2)) * 15), height: Math.round((gridElementUnit / (gridSize / 2)) * 15)}})
       }
     } else {
@@ -224,7 +224,7 @@ function drawGrid() {
       const rotation = Math.atan2(rotationVector.y, rotationVector.x) + (Math.PI / 2)
       const rotationDegree = rotation * (180 / Math.PI);
 
-      // positions of the two other points in the triangle (basic formula)
+      // positions of the two other points in the triangle (basic formula) based of p2
       const coneP1 = {x: p2.x + (-1 * (base / 2)), y: p2.y}
       const coneP2 = {x: p2.x + (base / 2), y: p2.y}
 
@@ -312,7 +312,7 @@ function drawGrid() {
 
       // only draw a dot to highlight starting point, if there is no position set right now
       if (currentNotAddedDrawableObject.position === undefined) {
-        ctx.arc(offsetX + currentMouseX, offsetY + currentMouseY - HEADER_HEIGHT, 5, 0, 2 * Math.PI); // TODO something is wonky here when grid is moved
+        ctx.arc(currentMouseX, currentMouseY - HEADER_HEIGHT, 5, 0, 2 * Math.PI); // TODO something is wonky here when grid is moved
         ctx.fill();
 
         ctx.lineWidth = 3;
@@ -320,8 +320,8 @@ function drawGrid() {
       }
       // otherwise we draw the to be drawn cone, because we have the starting position
       else {
-        const p1 = {x: offsetX + currentNotAddedDrawableObject.position.x, y: offsetY + currentNotAddedDrawableObject.position.y - HEADER_HEIGHT};
-        const p2 = {x: offsetX + currentMouseX, y: offsetY + currentMouseY - HEADER_HEIGHT};
+        const p1 = {x: currentNotAddedDrawableObject.position.x + offsetX, y: currentNotAddedDrawableObject.position.y - HEADER_HEIGHT + offsetY}; // we add offset because when saved we removed it
+        const p2 = {x: currentMouseX, y: currentMouseY - HEADER_HEIGHT};
 
         // minimum of 15 degrees for the cone
         const coneAngle = (gridElementUnit / (gridSize / 2)) * 15
@@ -335,9 +335,9 @@ function drawGrid() {
         const rotation = Math.atan2(rotationVector.y, rotationVector.x) + (Math.PI / 2)
         const rotationDegree = rotation * (180 / Math.PI);
 
-        // positions of the two other points in the triangle (basic formular)
-        const coneP1 = {x: (offsetX + currentMouseX) + (-1 * (base / 2)), y: offsetY + currentMouseY - HEADER_HEIGHT}
-        const coneP2 = {x: (offsetX + currentMouseX) + (base / 2), y: offsetY + currentMouseY - HEADER_HEIGHT}
+        // positions of the two other points in the triangle (basic formula) based of p2
+        const coneP1 = {x: p2.x + (-1 * (base / 2)), y: p2.y}
+        const coneP2 = {x: p2.x + (base / 2), y: p2.y}
 
         // adjusted positions with rotation in relation to p2 (p2 is the center of both of these)
         const rotatedConeP1 = {x: p2.x + ((coneP1.x - p2.x) * Math.cos(rotation)) - ((coneP1.y - p2.y) * Math.sin(rotation)), y: p2.y + ((coneP1.x - p2.x) * Math.sin(rotation)) + ((coneP1.y - p2.y) * Math.cos(rotation))}
@@ -355,6 +355,11 @@ function drawGrid() {
         ctx.lineWidth = 3;
         ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}ff`;
         ctx.stroke(cone);
+
+        // write information about current dimensions
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(`${Math.round(((h / (gridSize / 2)) * 5) / 2)} feet`, p1.x - 18, p1.y + 18);
+        ctx.fillText(`${coneAngle}°`, p1.x - 18, p1.y + 30);
       }
     }
 
