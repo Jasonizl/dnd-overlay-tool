@@ -51,6 +51,11 @@ app.whenReady().then(() => {
   createWindow();
   createOptionsWindow();
 
+  const optionsWindow = BrowserWindow.fromId(optionsWindowId);
+  optionsWindow.on('close', () => {
+    closeApplication();
+  });
+
   /**
    * maximize when not maximized - otherwise bring it back to default size
    */
