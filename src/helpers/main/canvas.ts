@@ -40,14 +40,18 @@ canvas.addEventListener('mousedown', (e) => {
   // middle mouse button resets offset to 0
   if(selectedElementIndex !== 0 || currentNotAddedDrawableObject !== undefined) {
     // special handling for ConeAOE
-    if(currentNotAddedDrawableObject.type === 'ConeAOE') {
+    if(currentNotAddedDrawableObject.type === 'ConeAOE' || currentNotAddedDrawableObject.type === 'MeasureRuler') {
       if(currentNotAddedDrawableObject.position === undefined) {
         currentNotAddedDrawableObject = {...currentNotAddedDrawableObject, position: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}};
-        // we return early, because a second click has to be made when adding a ConeAOE
+        // we return early, because a second click has to be made when adding these types of objects
         return;
       } else {
         // second click, we will add the second position and add it to our drawableObjects. dimension being the angle
-        drawableObjects.push({...currentNotAddedDrawableObject, position2: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: Math.round((gridElementUnit / (gridSize / 2)) * 15), height: Math.round((gridElementUnit / (gridSize / 2)) * 15)}})
+        if(currentNotAddedDrawableObject.type === 'ConeAOE') {
+          drawableObjects.push({...currentNotAddedDrawableObject, position2: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: Math.round((gridElementUnit / (gridSize / 2)) * 15), height: Math.round((gridElementUnit / (gridSize / 2)) * 15)}})
+        } else if (currentNotAddedDrawableObject.type === 'MeasureRuler') {
+          drawableObjects.push({...currentNotAddedDrawableObject, position2: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: gridElementUnit, height: gridElementUnit}})
+        }
       }
     } else {
       drawableObjects.push({...currentNotAddedDrawableObject, position: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}, dimension: {width: gridElementUnit, height: gridElementUnit}});
@@ -61,7 +65,6 @@ canvas.addEventListener('mousedown', (e) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.electron.resetActiveElement();
-
 
     return;
   }
@@ -244,6 +247,24 @@ function drawGrid() {
       ctx.lineWidth = 3;
       ctx.strokeStyle = `${color}bb`;
       ctx.stroke(cone);
+    } else if (type === 'MeasureRuler') {
+      const p1 = {x: position.x + offsetX, y: position.y - HEADER_HEIGHT + offsetY}; // we add offset because when saved we removed it
+      const p2 = {x: offsetX + position2.x, y: offsetY + position2.y - HEADER_HEIGHT};
+
+      // border, stroke is changeable via. gridElementUnit
+      ctx.lineWidth = 3 * (dimensionUnit / (gridSize / 2));
+      ctx.strokeStyle = `${color}bb`;
+
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+
+      // we calculate both, direct and "indirect" distance and show it. Up for DM to use what they prefer
+      const euclideanDist = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+      const roundtripDist = Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y); // its not called roundtrip, but forget the mathematical term
+
+      // normalize absolute values to grid size
+      const roundedEuclideanDistToGrid = Math.round((euclideanDist / gridSize) * 5);
+      const roundedRoundtripDistToGrid = Math.round((roundtripDist / gridSize) * 5);
     }
 
     ctx.stroke();
@@ -360,6 +381,39 @@ function drawGrid() {
         ctx.fillStyle = '#FFFFFF';
         ctx.fillText(`${Math.round(((h / (gridSize / 2)) * 5) / 2)} feet`, p1.x - 18, p1.y + 18);
         ctx.fillText(`${coneAngle}°`, p1.x - 18, p1.y + 30);
+      }
+    } else if (currentNotAddedDrawableObject.type === 'MeasureRuler') {
+      // only draw a dot to highlight starting point, if there is no position set right now
+      if (currentNotAddedDrawableObject.position === undefined) {
+        ctx.arc(currentMouseX, currentMouseY - HEADER_HEIGHT, 5, 0, 2 * Math.PI); // TODO something is wonky here when grid is moved
+        ctx.fill();
+
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}ff`;
+      }
+      // otherwise we draw a line from point 1 to point 2
+      else {
+        const p1 = {x: currentNotAddedDrawableObject.position.x + offsetX, y: currentNotAddedDrawableObject.position.y - HEADER_HEIGHT + offsetY}; // we add offset because when saved we removed it
+        const p2 = {x: currentMouseX, y: currentMouseY - HEADER_HEIGHT};
+
+        // border, stroke is changeable via. gridElementUnit
+        ctx.lineWidth = 3 * (gridElementUnit / (gridSize / 2));
+        ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}bb`;
+
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+
+        // we calculate both, direct and "indirect" distance and show it. Up for DM to use what they prefer
+        const euclideanDist = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        const roundtripDist = Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y); // its not called roundtrip, but forget the mathematical term
+
+        // normalize absolute values to grid size
+        const roundedEuclideanDistToGrid = Math.round((euclideanDist / gridSize) * 5);
+        const roundedRoundtripDistToGrid = Math.round((roundtripDist / gridSize) * 5);
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(`${roundedEuclideanDistToGrid} (euclidean) feet`, currentMouseX - 18, currentMouseY + 15);
+        ctx.fillText(`${roundedRoundtripDistToGrid} (roundtrip) feet`, currentMouseX - 18, currentMouseY + 27);
       }
     }
 

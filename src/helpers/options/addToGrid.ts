@@ -14,9 +14,8 @@ enum Type {
   RectangleAOE = "RectangleAOE",
   CircleImage = "CircleImage",
   RectangleImage = "RectangleImage",
-  ConeAOE = "ConeAOE"
-  // for later
-  // cones, rectangle,
+  ConeAOE = "ConeAOE",
+  MeasureRuler = 'MeasureRuler'
 }
 
 interface Item {
@@ -66,6 +65,8 @@ const addNewConeButton = document.getElementById('newConeButton');
 
 const addNewImageCircleInput = document.getElementById('newImageCircle') as HTMLInputElement;
 const addNewImageRectangleInput = document.getElementById('newImageRectangle') as HTMLInputElement;
+
+const addMeasureRulerButton = document.getElementById('newRulerButton');
 
 addNewCircleButton.addEventListener('click', () => {
   const tableBody = document.getElementById('tableBody');
@@ -142,6 +143,18 @@ addNewImageRectangleInput.addEventListener('change', () => {
     window.electron.addGridElement(newItem);
   }
 });
+
+addMeasureRulerButton.addEventListener('click', () => {
+  const tableBody = document.getElementById('tableBody');
+
+  const newItem = createNewItem({ name: 'Ruler', id: tableBody.children.length, type: Type.MeasureRuler });
+  addElementToTable(newItem.id, newItem.name, newItem.type, newItem.color);
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  window.electron.addGridElement(newItem);
+});
+
 
 function addElementToTable(id: number, name: string, type: Type, color: string) {
   const tableBody = document.getElementById('tableBody');
