@@ -22,6 +22,7 @@ interface Item {
 // @ts-ignore
 window.electron.setGridSize((size: number) => {
   gridSize = size;
+  gridElementUnit = gridSize;
   drawGrid();
 });
 
