@@ -355,6 +355,7 @@ function drawGrid() {
       const cubeSizeText = `${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet`
 
       ctx.fillText(cubeSizeText, currentMouseX - 18, currentMouseY + 8);
+      ctx.fillText(cubeSizeText, currentMouseX - (gridElementUnit/2), currentMouseY - (gridElementUnit/2) - HEADER_HEIGHT);
       drawCornerInformation(ctx, cubeSizeText)
     } else if (currentNotAddedDrawableObject.type === 'CircleImage') {
       // border
@@ -436,6 +437,10 @@ function drawGrid() {
 
         ctx.fillText(coneLengthText, p1.x - 18, p1.y + 18);
         ctx.fillText(`${coneAngle}°`, p1.x - 18, p1.y + 33);
+
+        ctx.fillText(coneLengthText, p2.x - 18, p2.y + 33);
+        ctx.fillText(`${coneAngle}°`, p2.x - 18, p2.y + 48);
+
         drawCornerInformation(ctx, coneLengthText)
         drawCornerInformation(ctx, `${coneAngle}°`, 15)
       }
@@ -472,8 +477,12 @@ function drawGrid() {
 
         setFontStyling(ctx);
 
+        ctx.fillText(`${roundedEuclideanDistToGrid} (euclidean) feet`, p1.x - 18, p1.y + HEADER_HEIGHT);
+        ctx.fillText(`${roundedRoundtripDistToGrid} (roundtrip) feet`, p1.x - 18, p1.y + 15 + HEADER_HEIGHT);
+
         ctx.fillText(`${roundedEuclideanDistToGrid} (euclidean) feet`, currentMouseX - 18, currentMouseY + 15);
         ctx.fillText(`${roundedRoundtripDistToGrid} (roundtrip) feet`, currentMouseX - 18, currentMouseY + 30);
+
         drawCornerInformation(ctx, `${roundedEuclideanDistToGrid} (euclidean) feet`);
         drawCornerInformation(ctx, `${roundedRoundtripDistToGrid} (roundtrip) feet`, 15);
       }
