@@ -1,4 +1,18 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.electron.removeActiveElement(() => {
+    const tableBody = document.getElementById('tableBody');
 
+    for (let i = 0; i < tableBody.children.length; i++) {
+      if (tableBody.children[i].classList.contains('active') && tableBody.children[i].id !== 'table-row-item-id-0') {
+        tableBody.children[i].remove();
+      }
+    }
+
+    const tableRow = document.getElementById('table-row-item-id-0');
+
+    tableRow.className = 'active';
+});
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

@@ -30,6 +30,7 @@ contextBridge.exposeInMainWorld('electron', {
   maximizeWindow: () => ipcRenderer.send('maximizeWindow'),
   minimizeWindows: () => ipcRenderer.send('minimizeWindows'),
   closeApp: () => ipcRenderer.send('closeApp'),
+  removeActiveElement: () => ipcRenderer.send('removeActiveElement'),
   resetActiveElement: () => ipcRenderer.send('resetActiveElement'),
 
   toggleGrid: (cb: (active: boolean) => void) => ipcRenderer.on('toggleGrid', (event, active) => cb(active)),
