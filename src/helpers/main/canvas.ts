@@ -68,6 +68,12 @@ canvas.addEventListener('mousedown', (e) => {
     if(currentNotAddedDrawableObject.type === 'ConeAOE' || currentNotAddedDrawableObject.type === 'MeasureRuler') {
       if(currentNotAddedDrawableObject.position === undefined) {
         currentNotAddedDrawableObject = {...currentNotAddedDrawableObject, position: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}};
+
+        // Cones have default angle of 60°
+        if (currentNotAddedDrawableObject.type === 'ConeAOE') {
+          gridElementUnit *= 2;
+        }
+
         // we return early, because a second click has to be made when adding these types of objects
         return;
       } else {
@@ -137,18 +143,36 @@ let gridColor = 'black';
 let gridThickness = 1;
 let gridElementUnit = gridSize;
 let gridActive = true;
+let cornerInformation = true;
 
 let selectedElementIndex = 0;
 let currentNotAddedDrawableObject: Item | undefined  = undefined;
 let drawableObjects: Item[] = [];
 const HEADER_HEIGHT = 25;
 
+/**
+ * sets the styling for shadowed text
+ */
 function setFontStyling(ctx: CanvasRenderingContext2D) {
   ctx.fillStyle = '#FFFFFF';
   ctx.shadowColor = "rgba(0,0,0,1)";
   ctx.shadowBlur = 5;
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
+}
+
+/**
+ * function to write detailed information about current aoe in all corners for more readability on table
+ */
+function drawCornerInformation(ctx: CanvasRenderingContext2D, text: string, yOffset: number = 0) {
+  if (!cornerInformation) {
+    return;
+  }
+
+  ctx.fillText(text, 0, HEADER_HEIGHT + yOffset); // upper left
+  ctx.fillText(text, 0, canvas.height - HEADER_HEIGHT + yOffset); // upper right
+  ctx.fillText(text, canvas.width - ctx.measureText(text).width, 0 + HEADER_HEIGHT + yOffset); // lower left
+  ctx.fillText(text, canvas.width - ctx.measureText(text).width, canvas.height - HEADER_HEIGHT + yOffset); // lower right
 }
 
 function drawGrid() {
@@ -317,9 +341,13 @@ function drawGrid() {
 
       // write information about current dimensions
       setFontStyling(ctx);
-      ctx.fillText(`${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet radius`, currentMouseX - 18, currentMouseY + 8);
-      ctx.fillText(`${(gridElementUnit / (gridSize / 2)) * 5} feet diameter`, currentMouseX - 18, currentMouseY + 23);
+      const circleRadiusText = `${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet radius`
+      const circleDiameterText = `${(gridElementUnit / (gridSize / 2)) * 5} feet diameter`
 
+      ctx.fillText(circleRadiusText, currentMouseX - 18, currentMouseY + 8);
+      ctx.fillText(circleDiameterText, currentMouseX - 18, currentMouseY + 23);
+      drawCornerInformation(ctx, circleRadiusText)
+      drawCornerInformation(ctx, circleDiameterText, 15)
     } else if (currentNotAddedDrawableObject.type === 'RectangleAOE') {
       ctx.fillRect(currentMouseX - (gridElementUnit/2), currentMouseY - (gridElementUnit/2) - HEADER_HEIGHT, gridElementUnit, gridElementUnit);
 
@@ -330,7 +358,11 @@ function drawGrid() {
 
       // write information about current dimensions
       setFontStyling(ctx);
-      ctx.fillText(`${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet`, currentMouseX - 18, currentMouseY + 8);
+      const cubeSizeText = `${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet`
+
+      ctx.fillText(cubeSizeText, currentMouseX - 18, currentMouseY + 8);
+      ctx.fillText(cubeSizeText, currentMouseX - (gridElementUnit/2), currentMouseY - (gridElementUnit/2) - HEADER_HEIGHT);
+      drawCornerInformation(ctx, cubeSizeText)
     } else if (currentNotAddedDrawableObject.type === 'CircleImage') {
       // border
       ctx.lineWidth = 3;
@@ -407,8 +439,16 @@ function drawGrid() {
 
         // write information about current dimensions
         setFontStyling(ctx);
-        ctx.fillText(`${Math.round(((h / (gridSize / 2)) * 5) / 2)} feet`, p1.x - 18, p1.y + 18);
+        const coneLengthText = `${Math.round(((h / (gridSize / 2)) * 5) / 2)} feet`;
+
+        ctx.fillText(coneLengthText, p1.x - 18, p1.y + 18);
         ctx.fillText(`${coneAngle}°`, p1.x - 18, p1.y + 33);
+
+        ctx.fillText(coneLengthText, p2.x - 18, p2.y + 33);
+        ctx.fillText(`${coneAngle}°`, p2.x - 18, p2.y + 48);
+
+        drawCornerInformation(ctx, coneLengthText)
+        drawCornerInformation(ctx, `${coneAngle}°`, 15)
       }
     } else if (currentNotAddedDrawableObject.type === 'MeasureRuler') {
       // only draw a dot to highlight starting point, if there is no position set right now
@@ -441,10 +481,16 @@ function drawGrid() {
         ctx.stroke();
         ctx.beginPath();
 
-
         setFontStyling(ctx);
+
+        ctx.fillText(`${roundedEuclideanDistToGrid} (euclidean) feet`, p1.x - 18, p1.y + HEADER_HEIGHT);
+        ctx.fillText(`${roundedRoundtripDistToGrid} (roundtrip) feet`, p1.x - 18, p1.y + 15 + HEADER_HEIGHT);
+
         ctx.fillText(`${roundedEuclideanDistToGrid} (euclidean) feet`, currentMouseX - 18, currentMouseY + 15);
         ctx.fillText(`${roundedRoundtripDistToGrid} (roundtrip) feet`, currentMouseX - 18, currentMouseY + 30);
+
+        drawCornerInformation(ctx, `${roundedEuclideanDistToGrid} (euclidean) feet`);
+        drawCornerInformation(ctx, `${roundedRoundtripDistToGrid} (roundtrip) feet`, 15);
       }
     }
 
