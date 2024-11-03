@@ -27,5 +27,6 @@ contextBridge.exposeInMainWorld('electron', {
 
   getDisplays: (cb: (displays: Display[], enabled: boolean) => void) =>
     ipcRenderer.on('getDisplays', (event, displays, enabled) => cb(displays, enabled)),
+  removeActiveElement: (cb: () => void) => ipcRenderer.on('removeActiveElement', (event) => cb()),
   resetActiveElement: (cb: () => void) => ipcRenderer.on('resetActiveElement', (event) => cb()),
 });

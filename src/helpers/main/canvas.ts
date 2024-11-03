@@ -38,6 +38,31 @@ let scrolling = false;
 /* Canvas - LISTENERS */
 canvas.addEventListener('mousedown', (e) => {
   // middle mouse button resets offset to 0
+  if (e.button === 1) {
+    offsetX = 0;
+    offsetY = 0;
+    drawGrid();
+    return;
+  }
+
+  if (e.button === 2) {
+    currentNotAddedDrawableObject = undefined;
+    gridElementUnit = gridSize;
+    selectedElementIndex = 0;
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.electron.removeActiveElement();
+
+    // give back command to options window, to set/reset active row
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.electron.resetActiveElement();
+
+    drawGrid();
+    return;
+  }
+
   if(selectedElementIndex !== 0 || currentNotAddedDrawableObject !== undefined) {
     // special handling for ConeAOE
     if(currentNotAddedDrawableObject.type === 'ConeAOE' || currentNotAddedDrawableObject.type === 'MeasureRuler') {
@@ -65,14 +90,8 @@ canvas.addEventListener('mousedown', (e) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     window.electron.resetActiveElement();
-
-    return;
-  }
-
-  if (e.button === 1) {
-    offsetX = 0;
-    offsetY = 0;
     drawGrid();
+
     return;
   }
 
@@ -123,6 +142,14 @@ let selectedElementIndex = 0;
 let currentNotAddedDrawableObject: Item | undefined  = undefined;
 let drawableObjects: Item[] = [];
 const HEADER_HEIGHT = 25;
+
+function setFontStyling(ctx: CanvasRenderingContext2D) {
+  ctx.fillStyle = '#FFFFFF';
+  ctx.shadowColor = "rgba(0,0,0,1)";
+  ctx.shadowBlur = 5;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+}
 
 function drawGrid() {
 
@@ -273,7 +300,7 @@ function drawGrid() {
   // draw function for new element
   if(selectedElementIndex !== 0) {
     ctx.beginPath();
-    ctx.font = 'bold 14px sans-serif'
+    ctx.font = 'bold 16px sans-serif'
 
     // set color to the one of the to be drawn object, but with a small alpha value for transparency
     ctx.fillStyle = `${currentNotAddedDrawableObject?.color}33`;
@@ -285,9 +312,11 @@ function drawGrid() {
       ctx.lineWidth = 3;
       ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}bb`;
 
+      ctx.stroke();
+      ctx.beginPath();
 
       // write information about current dimensions
-      ctx.fillStyle = '#FFFFFF';
+      setFontStyling(ctx);
       ctx.fillText(`${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet radius`, currentMouseX - 18, currentMouseY + 8);
       ctx.fillText(`${(gridElementUnit / (gridSize / 2)) * 5} feet diameter`, currentMouseX - 18, currentMouseY + 23);
 
@@ -299,9 +328,8 @@ function drawGrid() {
       ctx.strokeStyle = `${currentNotAddedDrawableObject?.color}bb`;
       ctx.strokeRect(currentMouseX - (gridElementUnit/2), currentMouseY - (gridElementUnit/2) - HEADER_HEIGHT, gridElementUnit, gridElementUnit);
 
-
       // write information about current dimensions
-      ctx.fillStyle = '#FFFFFF';
+      setFontStyling(ctx);
       ctx.fillText(`${((gridElementUnit / (gridSize / 2)) * 5) / 2} feet`, currentMouseX - 18, currentMouseY + 8);
     } else if (currentNotAddedDrawableObject.type === 'CircleImage') {
       // border
@@ -378,9 +406,9 @@ function drawGrid() {
         ctx.stroke(cone);
 
         // write information about current dimensions
-        ctx.fillStyle = '#FFFFFF';
+        setFontStyling(ctx);
         ctx.fillText(`${Math.round(((h / (gridSize / 2)) * 5) / 2)} feet`, p1.x - 18, p1.y + 18);
-        ctx.fillText(`${coneAngle}°`, p1.x - 18, p1.y + 30);
+        ctx.fillText(`${coneAngle}°`, p1.x - 18, p1.y + 33);
       }
     } else if (currentNotAddedDrawableObject.type === 'MeasureRuler') {
       // only draw a dot to highlight starting point, if there is no position set right now
@@ -410,10 +438,13 @@ function drawGrid() {
         // normalize absolute values to grid size
         const roundedEuclideanDistToGrid = Math.round((euclideanDist / gridSize) * 5);
         const roundedRoundtripDistToGrid = Math.round((roundtripDist / gridSize) * 5);
+        ctx.stroke();
+        ctx.beginPath();
 
-        ctx.fillStyle = '#FFFFFF';
+
+        setFontStyling(ctx);
         ctx.fillText(`${roundedEuclideanDistToGrid} (euclidean) feet`, currentMouseX - 18, currentMouseY + 15);
-        ctx.fillText(`${roundedRoundtripDistToGrid} (roundtrip) feet`, currentMouseX - 18, currentMouseY + 27);
+        ctx.fillText(`${roundedRoundtripDistToGrid} (roundtrip) feet`, currentMouseX - 18, currentMouseY + 30);
       }
     }
 

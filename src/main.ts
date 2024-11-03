@@ -88,11 +88,19 @@ app.whenReady().then(() => {
   ipcMain.on('closeApp', () => closeApplication());
 
   /**
-   * closes app. Called from X button of main window
+   * resets active element in table to the grid (first one)
    */
   ipcMain.on('resetActiveElement', () => {
     const optionsWindow = BrowserWindow.fromId(optionsWindowId);
     optionsWindow.webContents.send('resetActiveElement');
+  });
+
+  /**
+   * removes the current active element
+   */
+  ipcMain.on('removeActiveElement', () => {
+    const optionsWindow = BrowserWindow.fromId(optionsWindowId);
+    optionsWindow.webContents.send('removeActiveElement');
   });
 
   /**
