@@ -101,7 +101,7 @@ Button:disabled {
   flex-grow: unset;
 }
 
-#gridToggle {
+#gridToggle, #cornerInformationToggle {
   flex-grow: unset;
 }
 

@@ -139,6 +139,14 @@ app.whenReady().then(() => {
     mainWindow.webContents.send('toggleGrid', active);
   });
 
+  /**
+   * sets whether corner information should be rendered or not
+   * IPC from options renderer to main renderer
+   */
+  ipcMain.on('toggleCornerDetails', (event, active) => {
+    const mainWindow = BrowserWindow.fromId(mainWindowId);
+    mainWindow.webContents.send('toggleCornerDetails', active);
+  });
 
   /**
    * adds new grid element chosen from the button

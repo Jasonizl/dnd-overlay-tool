@@ -38,6 +38,8 @@ contextBridge.exposeInMainWorld('electron', {
   setGridColor: (cb: (color: string) => void) => ipcRenderer.on('setGridColor', (event, color) => cb(color)),
   setGridThickness: (cb: (thickness: number) => void) => ipcRenderer.on('setGridThickness', (event, thickness) => cb(thickness)),
 
+  toggleCornerDetails: (cb: (active: boolean) => void) => ipcRenderer.on('toggleCornerDetails', (event, active) => cb(active)),
+
   addGridElement: (cb: (gridElement: Item) => void) => ipcRenderer.on('addGridElement', (event, gridElement) => cb(gridElement)),
   moveGridElement: (cb: (elementId: number) => void) => ipcRenderer.on('moveGridElement', (event, elementId) => cb(elementId)),
   changeGridElementColor: (cb: (elementIndex: number, color: string) => void) => ipcRenderer.on('changeGridElementColor', (event, elementIndex, color) => cb(elementIndex, color)),

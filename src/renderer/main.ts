@@ -49,6 +49,13 @@ window.electron.toggleGrid((active: boolean) => {
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+window.electron.toggleCornerDetails((active: boolean) => {
+  cornerInformation = active;
+  drawGrid();
+});
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 window.electron.addGridElement((gridElement: Item) => {
   console.log(gridElement);
 
