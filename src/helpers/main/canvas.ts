@@ -68,6 +68,12 @@ canvas.addEventListener('mousedown', (e) => {
     if(currentNotAddedDrawableObject.type === 'ConeAOE' || currentNotAddedDrawableObject.type === 'MeasureRuler') {
       if(currentNotAddedDrawableObject.position === undefined) {
         currentNotAddedDrawableObject = {...currentNotAddedDrawableObject, position: {x: currentMouseX - offsetX, y: currentMouseY - offsetY}};
+
+        // Cones have default angle of 60°
+        if (currentNotAddedDrawableObject.type === 'ConeAOE') {
+          gridElementUnit *= 2;
+        }
+
         // we return early, because a second click has to be made when adding these types of objects
         return;
       } else {
